@@ -1538,7 +1538,7 @@ For example, if the MESSAGE_CONTENT intent is enabled, events like MESSAGE_CREAT
             const data = await response.json();
             const ramElement = document.getElementById('ram');
             if (ramElement) {
-                ramElement.innerHTML = `${(data.ram / (1024 ** 2)).toFixed(2)}MB / ${(data.maxRam / (1024 **3)).toFixed(2)}GB`;
+                ramElement.innerHTML = `${(data.ram / (1024 ** 2)).toFixed(2)}MB`;
             }
         } catch (error) {
             console.error('Error updating RAM usage:', error.message);

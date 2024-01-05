@@ -8,8 +8,7 @@ export default {
         const stats = await pidusage(process.pid)
         reply.status(200).send({
             cpu: stats.cpu,
-            ram: stats.memory,
-            maxRam: require('os').totalmem()
+            ram: stats.memory
         })
     }
 } as RouteOptions

@@ -11,8 +11,7 @@ exports.default = {
         const stats = await (0, pidusage_1.default)(process.pid);
         reply.status(200).send({
             cpu: stats.cpu,
-            ram: stats.memory,
-            maxRam: require('os').totalmem()
+            ram: stats.memory
         });
     }
 };
