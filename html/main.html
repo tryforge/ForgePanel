@@ -224,12 +224,12 @@
             <div class="grid grid-cols-4 gap-2 px-3 pb-2 text-gray-100">
                <div class="bg-dark rounded-lg p-4 flex flex-col items-center justify-center">
                   <span class="text-green-500"><i class="fas fa-caret-up"></i> +15%</span>
-                  <div class="text-3xl font-bold leading-none my-2">100</div>
+                  <div class="text-3xl font-bold leading-none my-2">{client.guildSize}</div>
                   <div class="text-sm text-gray-500">Guilds</div>
                </div>
                <div class="bg-dark rounded-lg p-4 flex flex-col items-center justify-center">
                   <span class="text-green-500"><i class="fas fa-caret-up"></i> +10%</span>
-                  <div class="text-3xl font-bold leading-none my-2">500</div>
+                  <div class="text-3xl font-bold leading-none my-2">{client.memberSize}</div>
                   <div class="text-sm text-gray-500">Members</div>
                </div>
                <div class="bg-dark rounded-lg p-4 flex flex-col items-center justify-center">
@@ -370,7 +370,7 @@
                         </div>
                         <div>
                            <h2 class="text-lg font-bold mb-1">Uptime</h2>
-                           <p class="text-sm text-gray-400" id="uptime">{client.uptime}</p>
+                           <p class="text-sm text-gray-400" id="uptime">Loading...</p>
                         </div>
                      </div>
                      <div class="flex items-center bg-dark-light w-full rounded-lg p-6">
@@ -378,8 +378,8 @@
                            <i class="ri-wifi-fill text-main"></i>
                         </div>
                         <div>
-                           <h2 class="text-lg font-bold mb-1">Avg. Ping</h2>
-                           <p class="text-sm text-gray-400">{client.ping}ms</p>
+                           <h2 class="text-lg font-bold mb-1">Ping</h2>
+                           <p class="text-sm text-gray-400" id="ping">{client.ping}ms</p>
                         </div>
                      </div>
                   </div>
@@ -1545,11 +1545,25 @@ For example, if the MESSAGE_CONTENT intent is enabled, events like MESSAGE_CREAT
         }
     }
 
+    async function updatePing() {
+        try {
+            const response = await fetch('/usage');
+            const data = await response.json();
+            const pingElement = document.getElementById('ping');
+            if (pingElement) {
+                pingElement.innerHTML = `${data.ping}ms`;
+            }
+        } catch (error) {
+            console.error('Error updating Ping:', error.message);
+        }
+    }
+
     function onLoad(){
         setInterval(() => {
             document.getElementById('uptime').innerHTML = getTime(new Date().getTime() - '{client.uptime}')
             updateCPUUsage()
             updateRamUsage()
+            updatePing()
         }, 1000)
     }
 </script>
