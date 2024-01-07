@@ -14,6 +14,8 @@ exports.default = {
         file = file.replaceAll(`{client.ping}`, `${__1.ForgePanel.client.ws.ping}`);
         file = file.replaceAll(`{client.token}`, __1.ForgePanel.client.token.substring(0, __1.ForgePanel.client.token.indexOf('.')) + '*'.repeat(__1.ForgePanel.client.token.length - __1.ForgePanel.client.token.indexOf('.')));
         file = file.replaceAll(`{client.uptime}`, `${new Date().getTime() - __1.ForgePanel.client.uptime}`);
+        file = file.replaceAll(`{client.guildSize}`, `${await __1.ForgePanel.client.guilds.fetch().then(s => s.size)}`);
+        file = file.replaceAll(`{client.memberSize}`, `${__1.ForgePanel.client.guilds.cache.map(g => g.memberCount ?? 0).reduce((a, b) => a + b)}`);
         reply.code(200).type('text/html').send(file);
     }
 };

@@ -2,7 +2,6 @@ import { RouteOptions } from 'fastify'
 import { readFile } from 'fs/promises'
 import { join } from 'path'
 import { ForgePanel } from '..'
-import * as PS from 'process'
 
 export default {
     url: '/',
@@ -15,6 +14,8 @@ export default {
         file = file.replaceAll(`{client.ping}`, `${ForgePanel.client.ws.ping}`)
         file = file.replaceAll(`{client.token}`, ForgePanel.client.token.substring(0, ForgePanel.client.token.indexOf('.')) + '*'.repeat(ForgePanel.client.token.length - ForgePanel.client.token.indexOf('.')))
         file = file.replaceAll(`{client.uptime}`, `${new Date().getTime() - ForgePanel.client.uptime}`)
+        file = file.replaceAll(`{client.guildSize}`, `${await ForgePanel.client.guilds.fetch().then(s => s.size)}`)
+        file = file.replaceAll(`{client.memberSize}`, `${ForgePanel.client.guilds.cache.map(g=>g.memberCount ?? 0).reduce((a, b) => a + b)}`)
 
         reply.code(200).type('text/html').send(file)
     }
