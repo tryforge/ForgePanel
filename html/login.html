@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+
+    <!-- SEO Metadata -->
+    <title>BotForge - Discord Bot Maker</title>
+    <meta name="description" content="BotForge is a Bot Maker that allows you to easily build Discord bots without any coding knowledge required. Create powerful bots with a simple interface and unleash their potential." />
+    <meta name="keywords" content="discord bot, bot maker, bot development, discord bots, bot builder" />
+    <meta name="author" content="@BotForge" />
+
+    <!-- Open Graph Metadata -->
+    <meta property="og:title" content="BotForge - Panel" />
+    <meta property="og:description" content="BotForge is a Bot Maker that allows you to easily build Discord bots without any coding knowledge required. Create powerful bots with a simple interface and unleash their potential." />
+    <meta property="og:url" content="https://botforge.org" />
+    <meta property="og:type" content="website" />
+
+    <!-- Twitter Metadata -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="BotForge - Discord Bot Maker" />
+    <meta name="twitter:description" content="BotForge is a Bot Maker that allows you to easily build Discord bots without any coding knowledge required. Create powerful bots with a simple interface and unleash their potential." />
+  
+    <!-- And the extras -->
+    <link rel="icon" href="assets/forgelogo.png" type="image/png" />
+    <meta name="robots" content="index, follow" />
+
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&amp;display=swap" rel="stylesheet">
+
+    <!-- CSS Libraries -->
+    <link href="https://unpkg.com/tailwindcss@^2/dist/tailwind.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@3.7.0/fonts/remixicon.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tippy.js/2.5.4/tippy.css" integrity="sha512-wYhtIFU+mDV48662uSmS8BA6uIuSRXB15B014+WdZgtU1Umfn/v8+Yq3hidRunKqTBmhBijyyuqSzCxmj6KlTg==" crossorigin="anonymous" referrerpolicy="no-referrer">
+    <link href="https://docs.botforge.org/styles/main.css?changes=3" rel="stylesheet">
+
+
+    <!-- Tippy.js -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tippy.js/2.5.4/tippy.css" integrity="sha512-wYhtIFU+mDV48662uSmS8BA6uIuSRXB15B014+WdZgtU1Umfn/v8+Yq3hidRunKqTBmhBijyyuqSzCxmj6KlTg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <!-- Aos -->
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+  
+  <style>
+body{font-family:Inter,sans-serif;transition:filter .5s ease-out;}
+  </style>
+  
+   </head>
+  
+<body class="bg-cover bg-center overflow-hidden" style="background-image: url('assets/login-background.png');">
+    
+<div class="min-h-screen flex items-center justify-center">
+
+<div class="bg-translucent px-12 py-10 w-96 mx-5 text-white">
+    <!-- Login -->
+    <h1 class="text-3xl text-white text-center font-bold">Login</h1>
+    <p class="text-gray-300 mt-1 text-xs text-center">Welcome to your BotForge Panel.</p>
+
+
+<!-- Invalid Credentials -->
+<div class="bg-translucent px-5 py-1 mt-3 hidden zoom-in" id="credentials_failed">
+    <p class="text-gray-200 mt-1 text-xs text-center"><i class="ri-lock-2-line"></i> It seems you are <b>not</b> authorized to access this panel, <a href="https://botforge.org/discord" target="_blank"><span class="text-blue-300">contact us</span></a> if you think this is an error.</p>    
+</div>
+
+
+<!-- Body -->
+<div class="flex items-center justify-center my-5 zoom-in">
+  <img src="assets/fingerprint.png" width="100px" height="100px" class="mx-auto">
+</div>
+
+
+<!-- Checkboxes -->
+<div class="flex items-start mb-4">
+  <input type="checkbox" id="terms" class="cursor-pointer select-none" onchange="updateButtonState()">
+  <label for="terms" class="text-xs pl-2 text-gray-200 cursor-pointer select-none">I accept the <a href="https://botforge.org/legal/terms" target="_blank"><span class="text-blue-300">Terms and Conditions</span></a></label>
+</div>
+<div class="flex items-start mb-5">
+  <input type="checkbox" id="privacy" class="cursor-pointer select-none" onchange="updateButtonState()">
+  <label for="privacy" class="text-xs pl-2 text-gray-200 cursor-pointer select-none">I accept the <a href="https://botforge.org/legal/privacy" target="_blank"><span class="text-blue-300">Privacy Policy</span></a></label>
+</div>
+
+<!-- Discord Login Button -->
+<a id="login-button" href="{loginURL}" class="block mx-auto w-full p-2 rounded-full text-sm shiny-button button-disabled text-center" role="button" disabled>
+  <span class="text-white"><i class="ri-discord-fill"></i> Login with Discord</span>
+</a>
+
+<style>
+.button-disabled {
+pointer-events: none;
+}
+</style>
+
+<!-- Additional Info -->
+<p class="text-xs text-center mt-5">Login troubles? <a href="https://botforge.org/discord" target="_blank"><span class="text-blue-300">Reach out to us!</span></a></p>
+
+<script>
+  // Enable Button only if the 2 checkboxes are agreed
+  function updateButtonState() {
+    const termsCheckbox = document.getElementById('terms');
+    const privacyCheckbox = document.getElementById('privacy');
+    const loginButton = document.getElementById('login-button');
+
+    if (loginButton.tagName.toLowerCase() === 'a') {
+      loginButton.addEventListener('click', function (event) {
+        if (loginButton.disabled) {
+          event.preventDefault();
+        }
+      });
+    }
+
+    loginButton.disabled = !(termsCheckbox.checked && privacyCheckbox.checked);
+    loginButton.classList.toggle('button-disabled', loginButton.disabled);
+  }
+</script>
+
+
+<script>
+// Display the invalid credentials error if current hash is "invalid_credentials"
+  window.addEventListener('load', function () {
+    toggleInvalidCredentials();
+  });
+
+  window.addEventListener('hashchange', function () {
+    toggleInvalidCredentials();
+  });
+
+  function toggleInvalidCredentials() {
+    const invalidCredentialsDiv = document.getElementById('credentials_failed');
+    const currentHash = window.location.hash;
+    if(currentHash === '#invalid-credentials') {
+    invalidCredentialsDiv.classList.remove('hidden');   
+    }
+  }
+</script>
+
+    
+  </div>
+
+</div>
+
+
+
+<style>
+.button-disabled {
+opacity: 40%;
+}
+.bg-translucent {
+    background: rgba(255, 255, 255, 0.100);
+    backdrop-filter: blur(15px);
+    border-radius: 15px;
+    border: 1px solid rgb(255 255 255 / 16%);
+}
+
+.shiny-button {
+  background-color: hsl(260, 85%, 45%);
+  color: hsl(260, 85%, 97%);
+  border-bottom: 1px solid rgb(255 255 255 / 16%);
+  border-top: 1px solid rgb(255 255 255 / 16%);
+}
+.shiny-button:hover {
+  animation-name: shine;
+  animation-duration: 260ms;
+}
+
+@keyframes shine {
+  0% {
+    background: linear-gradient(
+      30deg, 
+      hsl(260, 85%, 95%) 0%, 
+      hsl(260, 90%, 40%) 25%
+    );
+  }
+
+  25% {
+    background: linear-gradient(
+      30deg, 
+      hsl(260, 90%, 40%) 0%, 
+      hsl(260, 85%, 95%) 25%, 
+      hsl(260, 90%, 40%) 50%);
+  }
+
+  50% {
+    background: linear-gradient(
+      30deg,
+      hsl(260, 90%, 40%) 0%, 
+      hsl(260, 85%, 95%) 50%, 
+      hsl(260, 90%, 40%) 75%); 
+  }
+
+  75% {
+    background: linear-gradient(
+      30deg, 
+      hsl(260, 90%, 40%) 0%, 
+      hsl(260, 85%, 95%) 75%, 
+      hsl(260, 90%, 40%) 100%); 
+  }
+
+  100% {
+    background: linear-gradient(
+      30deg, 
+      hsl(260, 90%, 40%) 0%, 
+      hsl(260, 85%, 95%) 100%); 
+  }
+}
+
+  @keyframes zoomIn {
+    from {
+      transform: scale(0.5);
+      opacity: 0;
+    }
+    to {
+      transform: scale(1);
+      opacity: 1;
+    }
+  }
+
+  .zoom-in {
+    animation: zoomIn 1s ease-out;
+  }
+</style>
+
+  
+</body>
+
+   </html>
