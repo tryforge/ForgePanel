@@ -1,0 +1,1710 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bot Name</title>
+  <link rel="icon" type="image/webp" href="https://docs.botforge.org/media/karl_sm.webp">
+
+  <!-- Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+  <!-- CSS Libraries -->
+  <link href="https://unpkg.com/tailwindcss@^2/dist/tailwind.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/remixicon@4.2.0/fonts/remixicon.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tippy.js/6.2.0/border.css">
+
+  <!-- Custom Styling -->
+  <link rel="stylesheet" href="/styles/panel.css">
+
+  <script>
+  let clientID = '123123123'; // <-- Agg output the client ID there
+  let isMobile = window.matchMedia("(max-width: 767px)").matches;
+  if (isMobile) {
+    console.log('UI adapted to Mobile Devices.');
+  } else {
+    console.log('UI adapted to Desktop Devices.');
+  }
+  </script>
+</head>
+
+<body>
+
+  <div class="fixed bottom-0 left-0 w-full bg-alt-secondary text-primary flex justify-around items-center py-3 z-99 hidden" id="mobile-navigation">
+    <div id="mobileNavbar-main" class="mobile-bar contents">
+      <a class="block text-center mobile-tab text-primary pt-1 mobile-active-tab" onclick="goTo('go-overview'); backRegister(this.id)" id="mobile-tab-home">
+        <i class="ri-home-line text-xl"></i>
+        <span class="block text-xs text-secondary">Home</span>
+      </a>
+      <a class="block text-center mobile-tab opacity-50 pt-1 deny-active" id="mobile-tab-manage">
+        <i class="ri-tools-line text-xl"></i>
+        <span class="block text-xs text-secondary hidden">Manage</span>
+      </a>
+      <a class="block text-center mobile-tab opacity-50 pt-1 deny-active" id="mobile-tab-code">
+        <i class="ri-code-line text-xl"></i>
+        <span class="block text-xs text-secondary hidden">Code</span>
+      </a>
+      <a class="block text-center mobile-tab opacity-50 pt-1" onclick="goTo('go-extensions'); backRegister(this.id);" id="mobile-tab-extensions">
+        <i class="ri-puzzle-2-line text-xl"></i>
+        <span class="block text-xs text-secondary hidden">Extensions</span>
+      </a>
+      <a class="block text-center mobile-tab opacity-50 pt-1 deny-active" id="mobile-tab-more">
+        <i class="ri-more-line text-xl"></i>
+        <span class="block text-xs text-secondary hidden">More</span>
+      </a>
+    </div>
+
+    <div id="mobileNavbar-settings" class="mobile-bar hidden">
+      <a class="block text-center mobile-tab text-primary pt-1 deny-active" onclick="displayMobileNav('mobileNavbar-main'); goTo('mobile-tab-home');"
+        id="mobileSettings-tab-back">
+        <i class="ri-arrow-left-line text-xl"></i>
+        <span class="block text-xs text-secondary">Back</span>
+      </a>
+      <a class="block text-center mobile-tab opacity-50 pt-1" onclick="goTo('go-personalize'); backRegister(this.id);" id="mobileSettings-tab-personalize">
+        <i class="ri-emotion-laugh-line text-xl"></i>
+        <span class="block text-xs text-secondary hidden">Personalize</span>
+      </a>
+      <a class="block text-center mobile-tab opacity-50 pt-1" onclick="goTo('go-client'); backRegister(this.id);" id="mobileSettings-tab-client">
+        <i class="ri-puzzle-line text-xl"></i>
+        <span class="block text-xs text-secondary hidden">Client</span>
+      </a>
+      <a class="block text-center mobile-tab opacity-50 pt-1" onclick="goTo('go-general'); backRegister(this.id);" id="mobileSettings-tab-user">
+        <i class="ri-user-settings-line text-xl"></i>
+        <span class="block text-xs text-secondary hidden">User</span>
+      </a>
+      <a class="block text-center mobile-tab opacity-50 pt-1" onclick="goTo('go-themes'); backRegister(this.id);" id="mobileSettings-tab-themes">
+        <i class="ri-brush-line text-xl"></i>
+        <span class="block text-xs text-secondary hidden">Themes</span>
+      </a>
+    </div>
+  </div>
+
+  <div id="mobile-navigation-menus"></div>
+
+  <!-- Main Container -->
+  <div class="flex h-screen hidden" id="main-web-content">
+    <!-- Left Sidebar Content -->
+    <div class="bg-secondary p-4 w-full md:w-60 flex flex-col items-start" id="left-sidebar">
+      <!-- Sidebar Inner Container -->
+      <div class="min-h-screen flex flex-col flex-auto flex-shrink-0 antialiased text-category">
+        <!-- Sidebar Header -->
+        <div class="fixed flex flex-col top-0 left-0 w-full md:w-60 h-full">
+          <!-- Top Bar with Logo and User Icon -->
+          <div class="flex items-center justify-between px-1 border-b-primary mb-4">
+            <div class="mx-4 my-3 flex items-center w-full">
+              <!-- BotForge Logo -->
+              <div class="flex items-center">
+                <div class="rounded-lg overflow-hidden bg-main-gradient w-8 h-8 flex-shrink-0 flex items-center justify-center">
+                  <img src="/assets/logo128x128.png" width="17px" height="17px">
+                </div>
+                <span class="ml-2 font-bold text-primary">BotForge</span>
+              </div>
+            </div>
+            <!-- Menu Icon for mobile devices -->
+            <div class="flex items-center md:hidden" id="left-sidebar-burger" onclick="toggleLeftSidebar();">
+              <i class="ri-menu-line text-xl text-primary mx-4"></i>
+            </div>
+          </div>
+
+          <div class="hidden md:block">
+            <div id="back-home" class="hidden px-5 pb-4 menu-text text-secondary cursor-pointer hover:opacity-80" onclick="sweetHome();"><i
+                class="ri-arrow-left-line"></i> Back to Home</div>
+          </div>
+          <!-- Bot avatar  and name -->
+          <div id="selected-app">
+            <div class="mx-5 mt-1 flex items-center px-3 py-2 bg-tertiary border-primary rounded-md">
+              <!-- User Avatar (Placeholder) -->
+              <img src="https://docs.botforge.org/media/karl_sm.webp" alt="User Avatar" class="user-icon">
+              <!-- Bot Name -->
+              <div class="ml-3 text-xxs">
+                <div class="font-normal text-primary leading-none">BotName</div>
+              </div>
+            </div>
+          </div>
+          <!-- Settings Sidebar, tabs. -->
+          <div class="hidden overflow-y-auto overflow-x-hidden flex-grow sidebar" id="tabContainer-settings"></div>
+          <!-- Main Sidebar, tabs. -->
+          <div class="overflow-y-auto overflow-x-hidden flex-grow sidebar" id="tabContainer">
+            <!-- Dynamically created tabs & categories. -->
+          </div>
+          <!-- Bottom Section -->
+          <div class="mt-auto border-t-primary">
+            <ul class="flex flex-col py-2 space-y-1">
+              <!-- Bottom Tabs -->
+              <li>
+                <a href="https://docs.botforge.org" target="_blank" class="nav-link relative flex flex-row items-center h-9 focus:outline-none pr-6">
+                  <span class="inline-flex justify-center items-center nav-icon">
+                    <i class="ri-book-line"></i>
+                  </span>
+                  <span class="ml-2 text-xxs tracking-wide truncate">Documentation</span>
+                </a>
+              </li>
+              <li>
+                <a href="https://botforge.org/discord" class="nav-link relative flex flex-row items-center h-9 focus:outline-none pr-6" target="_blank">
+                  <span class="inline-flex justify-center items-center nav-icon">
+                    <i class="ri-discord-fill"></i>
+                  </span>
+                  <span class="ml-2 text-xxs tracking-wide truncate">Support</span>
+                </a>
+              </li>
+              <!-- ... -->
+            </ul>
+            <!-- User Info -->
+            <div class="px-5 py-5 flex items-center border-t-primary">
+              <!-- User Avatar (Placeholder) -->
+              <img src="https://docs.botforge.org/media/karl_sm.webp" alt="User Avatar" class="user-icon">
+              <!-- User Details -->
+              <div class="ml-3 text-xxs">
+                <div class="font-normal text-primary leading-none">Display Name</div>
+                <div>Username</div>
+              </div>
+              <!-- Logout Icon -->
+              <span class="ml-auto text-secondary cursor-pointer">
+                <i class="ri-logout-box-line" data-tippy-content="Sign Out!"></i>
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- End Left Sidebar Content -->
+
+    <!-- Main Content -->
+    <div class="flex-1 border-primary-resp w-screen rounded-lg bg-primary overflow-hidden" id="main-container">
+      <!-- Main Content Top Bar -->
+      <div class="py-4 md:pr-5 md:pl-5 text-left border-b-primary flex justify-between items-center">
+        <!-- Main Top Bars -->
+
+        <!-- Mobile Clients -->
+        <div class="pr-5 pl-3 md:pr-5 md:pl-5 text-center flex justify-between items-center w-full md:hidden">
+
+          <i class="ri-arrow-left-s-line text-lg disabled-check" onclick="goTo(previousTab);" id="mobile-back-btn"></i>
+
+          <a class="tab-label text-sm flex-grow font-semibold">Welcome!</a>
+
+          <img src="https://docs.botforge.org/media/karl_sm.webp" alt="Placeholder Image" class="w-6 h-6 rounded-full">
+        </div>
+
+        <!-- Desktop Clients -->
+        <div class="hidden md:block">
+          <!-- Breadcrumb Path -->
+          <span id="path-label" class="text-secondary text-xs">
+            <span class="mr-3"><i class="ri-home-6-line" id="path-main-icon"></i></span>
+            <span class="mr-3"><i class="ri-arrow-right-s-line"></i></span>
+            <span class="mr-3" id="path-category">...</span>
+            <span class="mr-3"><i class="ri-arrow-right-s-line"></i></span>
+            <i class="ri-loader-3-line" id="path-icon"></i> <span class="ml-1 text-primary" id="path-tab">...</span>
+          </span>
+        </div>
+
+        <!-- Sidebar toggle icon -->
+        <i id="sidebar-toggle-icon"
+          class="ri-menu-unfold-2-line px-2 py-1 bg-tertiary border-primary rounded w-fit text-primary text-base cursor-pointer hidden md:block"
+          data-tippy-content="Toggle Sidebar"></i>
+
+      </div>
+
+      <div id="toast-popup" class="fixed top-3 right-3 transform translate-x-full bg-alt-primary border-secondary rounded-md px-4 pb-5 pt-4 z-99 w-72 shadow-lg"
+        style="transition: transform 0.5s ease-out 0s; transform: translateX(150%);">
+        <p class="text-primary text-xxs leading-none"><span id="toast-label"><i class="ri-notification-line"></i> Notification</span> <i
+            class="ri-close-large-line float-right cursor-pointer" onclick="hideToast();"></i></p>
+        <p id="toast-message" class="text-primary text-xs mt-2">This is a toast message!</p>
+      </div>
+
+      <!-- Loading Indicator -->
+      <div id="spinner-container">
+        <div class="fixed bottom-3 left-1/2 transform -translate-x-1/2 bg-secondary border-primary rounded-full px-3 py-2 z-50 spinner-content">
+          <div aria-busy="true" class="flex items-center border-gradient">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" preserveAspectRatio="xMidYMid meet" class="icon_tOUal animate-spin"
+              style="vertical-align: middle; height: 17px; width: 17px;">
+              <g fill="none" stroke="url(#gradient)" stroke-width="4" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="11" opacity="0.3"></circle>
+                <path d="M12 1c2.8 0 5.6 1.1 7.8 3.2 4.3 4.3 4.3 11.3 0 15.6s-11.3 4.3-15.6 0"></path>
+              </g>
+              <defs>
+                <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                  <stop offset="0%" style="stop-color: #a78bfa; stop-opacity: 1" />
+                  <stop offset="100%" style="stop-color: #5b21b6; stop-opacity: 1" />
+                </linearGradient>
+              </defs>
+            </svg>
+            <span id="loadingText" class="ml-2 text-xs text-center">Loading<span class="animate-dots text-primary"></span></span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Confirmation Modal ( Dynamic ) : old z-index: z-98 -->
+      <div class="fixed inset-0 flex items-center justify-center z-99 hidden" id="confirmation-modal">
+        <div class="absolute inset-0 bg-black opacity-90"></div>
+        <!-- Modal Content -->
+        <div class="md:m-0 md:w-2/5 fixed z-98 h-fit mx-2 md:mx-0">
+          <!-- Modal Tab -->
+          <div class="rounded-lg h-full bg-alt-secondary border-primary">
+            <div id="confirmation-modal-header">
+              <!-- header -->
+            </div>
+
+            <div class="overflow-auto relative" id="confirmation-modal-content" style="max-height: 80vh;">
+              <!-- description content -->
+            </div>
+            <div id="confirmation-modal-buttons">
+              <!-- buttons -->
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Manage Notes Modal -->
+      <div class="fixed inset-0 flex items-center justify-center z-99 hidden" id="manage-notes-modal">
+        <div class="absolute inset-0 bg-black opacity-90"></div>
+        <!-- Modal Content -->
+        <div class="m-2 md:m-0 md:w-1/2 fixed z-50">
+          <!-- Modal Tab -->
+          <div class="rounded-lg h-full md:h-5/6 pb-5 bg-alt-secondary border-primary overflow-auto relative">
+            <div class="bg-alt-primary px-4 py-3 rounded-t-lg">
+              <h2 class="text-xs text-primary"><i class="ri-sticky-note-add-line"></i> Manage Local Notes</h2>
+            </div>
+            <!-- Close Button -->
+            <button onclick="closeModal(this)" class="absolute top-2 right-2 text-primary focus:outline-none">
+              <i class="ri-close-line"></i>
+            </button>
+            <!-- Input for Adding Notes -->
+            <section class="text-xs mx-5">
+              <div>
+                <div class="mt-5 px-5 py-4 border accent-color border-purple-400 rounded-lg w-full h-fit">
+                  <p class="text-xxs text-primary text-center"><i class="ri-error-warning-line"></i> Your notes are stored locally, ensuring
+                    exclusive access
+                    for you. Other users with access to this panel cannot view them. These notes are saved in your browser's cookies, if you
+                    clear your cookies
+                    for this panel, your notes will be erased.</p>
+                </div>
+                <div class="p-3 mt-5 bg-alt-primary border-secondary rounded-none md:rounded-lg w-full h-64 md:h-44 space-y-2 overflow-auto">
+                  <div class="flex flex-col items-center justify-center h-full hidden" id="modal-notes-notice">
+                    <i class="ri-sticky-note-line text-colored text-5xl"></i>
+                  </div>
+                  <span id="notes-list"></span>
+                  <!-- Notes List ( Dynamic ) -->
+                </div>
+              </div>
+              <div class="input-container relative">
+                <label for="add-notes" class="text-secondary text-2xxs uppercase mb-1 mt-4 font-semibold flex items-center justify-between">Add
+                  Note (<span id="char-count">0</span>/100)
+                  <a class="cursor-pointer uppercase ml-auto text-2xxs text-colored" data-tippy-content="
+                    <div class='flex items-start'>
+                    <img src='/assets/todoPreview.gif' class='rounded' width='180px' height='180px'>
+                    <div class='ml-4'>
+                    <p class='text-xs text-tertiary'><i class='ri-hashtag inline-block align-text-top text-secondary'></i> Use the input to add a note, you can add a maximum of <b>25</b> notes, <b>100</b> characters each.</p>
+                    <br>
+                    <p class='text-xs text-tertiary'><i class='ri-hashtag inline-block align-text-top text-secondary'></i> Use the <i class='ri-delete-bin-line text-red-500'></i> icon to delete a note.</p>
+                    <br>
+                    <p class='text-xs text-tertiary'><i class='ri-hashtag inline-block align-text-top text-secondary'></i> Click a note to mark it as <s>completed</s>.</p>
+                    </div>
+                    </div>
+                    "><i class="ri-pushpin-2-fill"></i> What's this?</a>
+                </label>
+                <div class="flex items-center">
+                  <div class="relative w-full">
+                    <span class="absolute inset-y-0 left-0 flex items-center pl-3">
+                      <i class="ri-sticky-note-line text-secondary"></i>
+                    </span>
+                    <input type="text" id="add-notes" name="add-notes"
+                      class="pl-8 pr-3 py-2 w-full bg-tertiary border-secondary rounded focus:outline-none focus:border-primary" spellcheck="false"
+                      placeholder="Your Note" maxlength="100" oninput="updateCharCount(this)">
+                  </div>
+                  <button onclick="addNote()" class="ml-1 px-3 py-2 bg-tertiary border-secondary rounded focus:outline-none focus:border-primary"
+                    id="add-note-button">
+                    <i class="ri-add-line text-secondary"></i>
+                  </button>
+                </div>
+              </div>
+            </section>
+          </div>
+        </div>
+      </div>
+      <!-- End Manage Notes Modal -->
+
+      <!-- Tabs content get generated inside main-content div. -->
+      <div class="main-content overflow-y-auto h-screen px-2 pt-0 md:px-5 md:pt-3 pb-40 md:pb-20" style="/*padding-bottom: 6.5%;*/">
+        <!-- Tabs Content -->
+
+        <!-- Overview Tab -->
+        <div class="tab-content hidden" id="overview-content">
+          <!-- Header Banner -->
+          <div class="w-full h-24 bg-main-gradient flex items-center justify-between px-4 rounded-lg">
+            <div>
+              <h1 class="text-sm md:text-lg text-tertiary">Welcome back, <span class="font-semibold">Username</span>!</h1>
+              <p class="text-tertiary text-xs-xxs">View your bot's statistics and general information.</p>
+
+            </div>
+            <img src="/assets/rocketImage.webp" alt="Header Image" class="h-28 w-28 object-contain">
+          </div>
+          <!-- End Header Banner -->
+
+          <!-- Statistics Section -->
+          <div class="flex flex-col md:flex-row w-full mt-2 md:mt-5">
+
+            <div class="flex w-full md:w-1/2 md:mr-2 mb-1 md:mb-0 space-x-2 md:space-x-0"> <!-- set 1 -->
+              <!-- Guilds -->
+              <div class="w-full bg-alt-secondary border-primary flex-grow p-4 rounded-lg text-left items-center md:mr-4">
+                <div class="flex justify-between items-center w-full">
+                  <span class="text-xs text-secondary"><i class="ri-home-6-line"></i> Guilds</span>
+                  <i class="ri-arrow-right-s-line text-lg text-secondary"></i>
+                </div>
+                <p class="text-3xl font-semibold mb-2">100</p>
+              </div>
+              <!-- Members -->
+              <div class="w-full bg-alt-secondary border-primary flex-grow p-4 rounded-lg text-left items-center md:mr-4">
+                <div class="flex justify-between items-center w-full">
+                  <span class="text-xs text-secondary"><i class="ri-emotion-2-line"></i> Members</span>
+                  <i class="ri-arrow-right-s-line text-lg text-secondary"></i>
+                </div>
+                <p class="text-3xl font-semibold mb-2">5000</p>
+              </div>
+            </div>
+
+            <div class="flex w-full md:w-1/2 md:ml-2 mt-1 md:mt-0 space-x-2 md:space-x-0"> <!-- set 2 -->
+              <!-- Commands -->
+              <div class="w-full bg-alt-secondary border-primary flex-grow p-4 rounded-lg text-left items-center md:mr-4">
+                <div class="flex justify-between items-center w-full">
+                  <span class="text-xs text-secondary"><i class="ri-code-s-slash-line"></i> Commands</span>
+                  <i class="ri-arrow-right-s-line text-lg text-secondary"></i>
+                </div>
+                <p class="text-3xl font-semibold mb-2">200</p>
+              </div>
+              <!-- Events -->
+              <div class="w-full bg-alt-secondary border-primary flex-grow p-4 rounded-lg text-left items-center">
+                <div class="flex justify-between items-center w-full">
+                  <span class="text-xs text-secondary"><i class="ri-terminal-line"></i> Events</span>
+                  <i class="ri-arrow-right-s-line text-lg text-secondary"></i>
+                </div>
+                <p class="text-3xl font-semibold mb-2">5</p>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- End Statistics Section -->
+          <!-- Columns Section -->
+          <div class="block md:flex mt-2 md:mt-5">
+            <div class="flex-shrink-0 w-full pr-0 md:w-1/2 md:pr-2">
+              <!-- Manage Tab -->
+              <div class="rounded-lg h-72 pb-5 bg-alt-secondary border-primary">
+                <div class="bg-alt-primary px-4 py-3 rounded-t-lg">
+                  <h2 class="text-xs text-primary"><i class="ri-list-settings-line"></i> Manage</h2>
+                </div>
+                <div class="px-5 py-5 flex items-center border-b-primary">
+                  <!-- Bot Avatar (Placeholder) -->
+                  <img src="https://docs.botforge.org/media/karl_sm.webp" alt="Bot Avatar" class="h-8 w-8 rounded-full">
+                  <!-- Bot Details -->
+                  <div class="ml-3">
+                    <div class="font-normal text-primary text-xs leading-none">BotName</div>
+                    <div class="text-xxs text-green-500 mt-1 leading-none">● Online</div>
+                  </div>
+                  <!-- Settings Icon -->
+                  <span class="ml-auto text-secondary cursor-pointer">
+                    <i class="ri-settings-3-line" data-tippy-content="Bot Settings" onclick="goTo('openSidebar-settings')"></i>
+                  </span>
+                </div>
+                <!-- Manage Tab Content -->
+                <div class="text-xs text-primary w-fit my-7 mx-5 m-auto space-y-2">
+                  <!-- Invite Your Bot -->
+                  <a class="block py-2 px-3 bg-tertiary border-primary rounded w-full cursor-pointer" onclick="goTo('go-invite')">
+                    <span><i class="ri-rocket-2-line text-secondary mr-2"></i></span> <span>Invite Your Bot</span>
+                  </a>
+                  <!-- Manage Commands -->
+                  <a class="block py-2 px-3 bg-tertiary border-primary rounded w-full cursor-pointer" onclick="goTo('go-commands')">
+                    <span><i class="ri-keyboard-line text-secondary mr-2"></i></span> <span>Manage Commands</span>
+                  </a>
+                  <!-- Manage Servers -->
+                  <a class="block py-2 px-3 bg-tertiary border-primary rounded w-full cursor-pointer" onclick="goTo('go-servers')">
+                    <span><i class="ri-home-gear-line text-secondary mr-2"></i></span> <span>Manage Servers</span>
+                  </a>
+                </div>
+                <!-- End Manage Tab Content -->
+              </div>
+              <!-- End Manage Tab -->
+            </div>
+            <div class="flex-shrink-0 w-full pl-0 md:w-1/2 md:pl-2 mt-5 md:mt-0">
+              <!-- Resources Tab -->
+              <div class="rounded-lg h-72 bg-alt-secondary border-primary">
+                <div class="bg-alt-primary px-4 py-3 rounded-t-lg">
+                  <h2 class="text-xs text-primary"><i class="ri-cpu-line"></i> Resources</h2>
+                </div>
+                <div class="px-4 py-2 rounded-b-lg">
+                  <!-- CPU Usage -->
+                  <div class="mt-4">
+                    <p class="text-xs text-secondary mb-1">CPU Usage</p>
+                    <div class="flex items-center justify-between">
+                      <div class="w-full bg-alt-light h-4 rounded-full mr-3">
+                        <!-- Progress -->
+                        <div class="accent-color bg-main-gradient-to-left h-full rounded-full" style="width: 60%;"></div>
+                      </div>
+                      <span class="text-xs text-primary">60%</span>
+                    </div>
+                  </div>
+                  <!-- RAM Usage -->
+                  <div class="mt-4">
+                    <p class="text-xs text-secondary">RAM Usage</p>
+                    <p class="text-xs text-primary">250mb</p>
+                  </div>
+                  <!-- Uptime -->
+                  <div class="mt-4">
+                    <p class="text-xs text-secondary">Uptime</p>
+                    <p class="text-xs text-primary">7 days, 12 hours</p>
+                  </div>
+                  <!-- Bot Ping -->
+                  <div class="mt-4">
+                    <p class="text-xs text-secondary">Ping</p>
+                    <p class="text-xs text-primary">50 ms</p>
+                  </div>
+                </div>
+              </div>
+              <!-- End Resources Tab -->
+            </div>
+          </div>
+          <!-- End Columns Section -->
+          <!-- end center -->
+
+          <!-- columns -->
+          <div class="block md:flex mt-5">
+            <!-- Column one -->
+            <div class="flex-shrink-0 w-full pr-0 md:w-1/2 md:pr-2 mt-5 md:mt-0">
+              <!-- servers table -->
+              <section class="container">
+                <div class="w-full md:mb-8 overflow-hidden">
+                  <div class="w-full overflow-x-auto rounded-lg h-72 bg-alt-secondary border-primary">
+                    <table class="w-full">
+                      <thead>
+                        <tr class="text-xs tracking-wide text-left text-secondary capitalize bg-alt-primary">
+                          <th class="px-4 py-3 text-xxs font-normal">Name</th>
+                          <th class="px-4 py-3 text-xxs font-normal">Members</th>
+                          <th class="px-4 py-3 text-xxs font-normal">Server Owner</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <!-- individual server data -->
+                        <tr class="text-secondary border-b-primary whitespace-nowrap">
+                          <td class="px-4 py-3">
+                            <div class="flex items-center text-sm">
+                              <div class="relative w-8 h-8 mr-3 rounded-full md:block">
+                                <img class="object-cover w-full h-full rounded-full" src="https://docs.botforge.org/media/karl_sm.webp"
+                                  alt="${serverName}'s server icon." loading="lazy" />
+                                <div class="absolute inset-0 rounded-full shadow-inner" aria-hidden="true"></div>
+                              </div>
+                              <div>
+                                <p class="font-normal text-xs text-primary leading-none">Server Name</p>
+                                <p class="text-xxs leading-none mt-1">Community</p>
+                              </div>
+                            </div>
+                          </td>
+                          <td class="px-4 py-3 text-xs font-normal"><span class="text-green-500">●</span> 22<span class="opacity-50">
+                              / </span>500</td>
+                          <td class="px-4 py-3 text-xs">
+                            <span class="rounded-full border-gray px-3 py-2"><i class="ri-vip-crown-line"></i> OwnerName</span>
+                          </td>
+                        </tr>
+                        <!-- end individual server data -->
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </section>
+              <!-- end table -->
+            </div>
+            <!-- end column 1 -->
+            <!-- Column two -->
+            <div class="flex-shrink-0 w-full pl-0 md:w-1/2 md:pl-2 mt-5 md:mt-0">
+              <div class="rounded-lg h-72 bg-alt-secondary border-primary">
+                <div class="bg-alt-primary px-4 py-3 rounded-t-lg">
+                  <h2 class="text-xs text-primary"><i class="ri-line-chart-line"></i> Servers</h2>
+                </div>
+                <div class="rounded-b-lg h-5/6" id="servers-chart-div">
+                  <!-- chart -->
+                  <canvas id="chart-test" class="accent-color"></canvas>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- end columns -->
+        </div>
+        <!-- End Tab -->
+
+        <!-- Commands Tab -->
+        <div class="tab-content hidden" id="commands-content">
+
+          <div class="rounded-lg h-fit bg-alt-secondary border-primary mt-3">
+            <div class="bg-alt-primary px-4 py-2 rounded-t-lg flex items-center justify-between">
+              <h2 class="text-xs text-primary hidden md:block"><i class="ri-list-check-2"></i> Commands</h2>
+              <!-- Search Bar -->
+              <div class="relative select-none w-full md:w-auto">
+                <span class="text-secondary hover:text-primary cursor-pointer" onclick="sortCommands('command')" data-tippy-content="Sort Commands"><i
+                    id="command-sortIcon" class="ri-sort-asc"></i></span>
+                <input type="text" class="ignore-changes bg-tertiary px-3 py-2 rounded-lg text-xs focus:outline-none w-11/12 md:w-auto" placeholder="Search..."
+                  oninput="searchCommands(this.value, 'command')" id="search-commands">
+                <button type="button" class="absolute right-3 top-1/2 transform -translate-y-1/2 text-secondary focus:outline-none">
+                  <i class="ri-search-line"></i>
+                </button>
+              </div>
+            </div>
+            <!-- Tab Content -->
+            <div class="commands-tab mb-2">
+              <div id="not-found-command" class="hidden flex flex-col items-center justify-center mt-5">
+                <i class="ri-search-line text-6xl text-colored"></i>
+                <p class="text-xs text-primary mt-2">No matching commands found!</p>
+              </div>
+              <div class="command-list overflow-auto" style="max-height: 67vh;">
+                <!-- commands -->
+                <div class="bg-alt-secondary px-4 py-3 border-b-primary w-full flex items-center justify-between command">
+                  <!-- Left Icon -->
+                  <div class="flex items-center">
+                    <i class="ri-code-line text-2xl text-secondary"></i>
+                    <!-- Title and Subtitle -->
+                    <div class="ml-3">
+                      <h2 class="text-sm font-semibold">Command Name</h2>
+                      <p class="text-xxs text-secondary">Command Trigger</p>
+                    </div>
+                  </div>
+                  <!-- Right Icons -->
+                  <div class="flex items-center">
+                    <!-- Icons -->
+                    <div>
+                      <i class="ri-pencil-line text-lg text-secondary hover:text-colored mr-4 px-1 cursor-pointer" data-tippy-content="Edit Command"></i>
+                      <i class="ri-delete-bin-line text-lg text-secondary hover:text-red-500 cursor-pointer" onclick="callDeleteCommand('COMMAND_ID')"
+                        data-tippy-content="Delete Command"></i>
+                    </div>
+                    <!-- Switch -->
+                    <label for="command-${Command ID}" class="ml-4">
+                      <div class="relative flex items-center cursor-pointer select-none" data-tippy-content="Enable or Disable Command">
+                        <input type="checkbox" id="command-${Command ID}" class="sr-only">
+                        <div class="block toggle-bg w-10 h-6 rounded-full transition duration-300">
+                          <div class="dot absolute left-1 top-1 bg-white w-4 h-4 rounded-full transition duration-200"></div>
+                        </div>
+                      </div>
+                    </label>
+                  </div>
+                </div>
+              </div>
+
+              <div class="flex items-center justify-between px-4 pt-3 pb-1">
+                <!-- Text on the left side -->
+                <div class="hidden md:block text-xxs text-colored"><i class="ri-store-2-line"></i> TIP: Get commands on the Template Store!
+                </div>
+                <!-- Create Button, right side. -->
+                <div class="select-none">
+                  <span id="commands-create-dropdown" class="inline-block"><i class="ri-more-2-line cursor-pointer" data-tippy-content="More Options"
+                      data-tippy-delay="[1000]"></i></span>
+                  <span id="commands-create-button">
+                    <button class="button-gradient text-tertiary px-6 py-2 rounded text-xs">
+                      Create
+                    </button>
+                  </span>
+                </div>
+              </div>
+
+            </div>
+            <!-- End Commands Tab Content -->
+          </div>
+        </div>
+        <!-- end commands tab -->
+
+        <!-- Events Tab -->
+        <div class="tab-content hidden" id="events-content">
+
+          <div class="rounded-lg h-fit bg-alt-secondary border-primary mt-3">
+            <div class="bg-alt-primary px-4 py-2 rounded-t-lg flex items-center justify-between">
+              <h2 class="text-xs text-primary hidden md:block"><i class="ri-list-check-2"></i> Events</h2>
+              <!-- Search Bar -->
+              <div class="relative select-none w-full md:w-auto">
+                <span class="text-secondary hover:text-primary cursor-pointer" onclick="sortCommands('event')" data-tippy-content="Sort Events"><i
+                    id="event-sortIcon" class="ri-sort-asc"></i></span>
+                <input type="text" class="ignore-changes bg-tertiary px-3 py-2 rounded-lg text-xs focus:outline-none w-11/12 md:w-auto" placeholder="Search..."
+                  oninput="searchCommands(this.value, 'event')" id="search-events">
+                <button type="button" class="absolute right-3 top-1/2 transform -translate-y-1/2 text-secondary focus:outline-none">
+                  <i class="ri-search-line"></i>
+                </button>
+              </div>
+            </div>
+            <!-- Tab Content -->
+            <div class="events-tab mb-2">
+              <div id="not-found-event" class="hidden flex flex-col items-center justify-center mt-5">
+                <i class="ri-search-line text-6xl text-colored"></i>
+                <p class="text-xs text-primary mt-2">No matching events found!</p>
+              </div>
+              <div class="event-list overflow-auto" style="max-height: 67vh;">
+                <!-- events -->
+                <div class="bg-alt-secondary px-4 py-3 border-b-primary w-full flex items-center justify-between event">
+                  <!-- Left Icon -->
+                  <div class="flex items-center">
+                    <i class="ri-flashlight-line text-2xl text-secondary"></i>
+                    <!-- Title and Subtitle -->
+                    <div class="ml-3">
+                      <h2 class="text-sm font-semibold">Event Name</h2>
+                      <p class="text-xxs text-secondary">Event Trigger</p>
+                    </div>
+                  </div>
+                  <!-- Right Icons -->
+                  <div class="flex items-center">
+                    <!-- Icons -->
+                    <div>
+                      <i class="ri-pencil-line text-lg text-secondary hover:text-colored mr-4 px-1 cursor-pointer" data-tippy-content="Edit Event"></i>
+                      <i class="ri-delete-bin-line text-lg text-secondary hover:text-red-500 cursor-pointer" onclick="callDeleteEvent('EVENT_ID')"
+                        data-tippy-content="Delete Event"></i>
+                    </div>
+                    <!-- Switch -->
+                    <label for="event-${Event ID}" class="ml-4">
+                      <div class="relative flex items-center cursor-pointer select-none" data-tippy-content="Enable or Disable Event">
+                        <input type="checkbox" id="event-${Event ID}" class="sr-only">
+                        <div class="block toggle-bg w-10 h-6 rounded-full transition duration-300">
+                          <div class="dot absolute left-1 top-1 bg-white w-4 h-4 rounded-full transition duration-200"></div>
+                        </div>
+                      </div>
+                    </label>
+                  </div>
+                </div>
+              </div>
+
+              <div class="flex items-center justify-between px-4 pt-3 pb-1">
+                <!-- Text on the left side -->
+                <div class="hidden md:block text-xxs text-colored"><i class="ri-store-2-line"></i> TIP: Get events on the Template Store!</div>
+                <!-- Create Button, right side. -->
+                <div class="select-none">
+                  <span id="events-create-dropdown" class="inline-block"><i class="ri-more-2-line cursor-pointer" data-tippy-content="More Options"
+                      data-tippy-delay="[1000]"></i></span>
+                  <span id="events-create-button">
+                    <button class="button-gradient text-tertiary px-6 py-2 rounded text-xs">
+                      Create
+                    </button>
+                  </span>
+                </div>
+              </div>
+            </div>
+            <!-- End Events Tab Content -->
+          </div>
+        </div>
+        <!-- end events tab -->
+
+        <!-- extensions tab -->
+        <div class="tab-content hidden" id="extensions-content">
+
+          <div id="extensions-savepopup"></div>
+
+          <div class="flex flex-wrap mt-3" id="extensions-list"> <!-- extensions flex -->
+            <!-- extensions cards :D -->
+          </div>
+
+        </div> <!-- end extensions tab -->
+
+        <!-- Settings sidebar content -->
+        <div class="tab-content" id="personalize-content">
+
+          <div id="personalize-savepopup"></div>
+
+          <div class="flex-shrink-0 mt-3 mb-4">
+            <!-- Personalize Tab -->
+            <div class="rounded-lg h-fit bg-alt-secondary border-primary">
+              <div class="bg-alt-primary px-4 py-3 rounded-t-lg">
+                <h2 class="text-xs text-primary" id="personalize-tab-label"><i class="ri-emotion-happy-line"></i> Customization!</h2>
+              </div>
+              <div class="flex flex-col lg:flex-row w-full p-4 rounded-md">
+                <!-- First Column: Avatar with Upload Button -->
+                <div class="flex flex-col items-center lg:w-w-1/4 lg:flex-grow-0 mb-4 lg:mb-0">
+                  <!-- Avatar Square -->
+                  <div class="w-32 h-32 bg-tertiary rounded-lg">
+                    <!-- Dat bot avatar inside dat square -->
+                    <img id="bot-avatar-1" src="https://docs.botforge.org/media/karl_sm.webp" alt="Bot Avatar" class="w-full h-full rounded-full p-5">
+                  </div>
+                  <!-- Upload Image Button -->
+                  <input type="file" id="customize-avatarInput" class="hidden" accept="image/*">
+                  <label for="customize-avatarInput"
+                    class="clickable-input bg-tertiary border-primary text-primary px-6 py-2 rounded text-xs mr-1 text-xxs w-32 md:w-full whitespace-nowrap my-3 cursor-pointer">
+                    <i class="ri-image-add-line"></i> Upload Avatar
+                  </label>
+                  <p class="text-2xxs text-secondary mx-auto md:mx-0 md:mr-auto">* GIFs are supported.</p>
+                </div>
+
+                <!-- Second Column: Customization Inputs -->
+                <div class="flex-grow md:mx-4">
+
+                  <div class="w-full bg-tertiary overflow-hidden rounded-lg h-32 relative mb-3">
+
+                    <div id="upload-text" class="absolute inset-0 flex items-center justify-center text-tertiary font-semibold cursor-pointer">
+                      <a class="text-primary"><i class="ri-upload-line"></i> Upload Banner</a>
+                    </div>
+
+                    <label for="banner-upload" class="w-full h-full absolute top-0 left-0 z-10 cursor-pointer">
+                      <input type="file" id="banner-upload" class="hidden" accept="image/*" onchange="handleUpload(event)">
+                      <div class="w-full h-full flex items-center justify-center">
+                        <div id="banner-image" class="w-full h-full bg-cover bg-center transition-opacity duration-300 opacity-100 hover:opacity-50 relative">
+                        </div>
+                      </div>
+                      <div id="remove-button" data-tippy-content="Remove Banner"
+                        class="absolute bottom-2 right-2 hidden clickable-input text-primary hover:text-red-500">
+                        <button class="bg-alt-primary text-xs h-8 w-8 rounded cursor-pointer"><i class="ri-delete-bin-line"></i></button>
+                      </div>
+                    </label>
+                  </div>
+
+                  <!-- Input Field for Bot Name -->
+                  <p class="uppercase text-secondary text-xxs block md:hidden my-3">Bot Name</p> <!-- mobile label only -->
+                  <div class="relative select-none">
+                    <!-- Icon -->
+                    <i class="ri-robot-3-line absolute left-3 top-1/2 transform -translate-y-1/2 text-secondary"></i>
+                    <!-- Input Field -->
+                    <input type="text" id="bot-name-input" class="bg-tertiary w-full pl-10 py-3 rounded-lg text-xs focus:outline-none"
+                      placeholder="Your Bot Name" minlength="2" maxlength="32" spellcheck="false">
+                  </div>
+
+                  <!-- Bot Status Section -->
+                  <div class="block md:flex">
+                    <p class="uppercase text-secondary text-xxs block md:hidden my-3">Status</p> <!-- mobile label only -->
+                    <!-- Existing status select menu -->
+                    <div class="relative custom-select mt-3 mr-2 w-full md:w-3/4">
+                      <!-- Select button -->
+                      <button type="button" class="flex items-center justify-between w-full px-4 py-3 text-left bg-tertiary rounded text-xs">
+                        <span>
+                          <span class="inline-flex items-center space-x-2">
+                            <span class="text-green-500"><i class="ri-checkbox-blank-circle-fill"></i></span>
+                            <span>Online</span>
+                          </span>
+                        </span>
+                        <i class="select-icon ri-arrow-right-s-line"></i>
+                      </button>
+                      <!-- Options container (hidden by default) -->
+                      <div class="relative">
+                        <div class="md:hidden">
+                          <div class="fixed inset-0 bg-black opacity-70 w-screen h-screen hidden z-20 options-background"></div>
+                        </div>
+                        <div
+                          class="fixed bottom-0 pb-40 md:pb-0 md:absolute md:top-full md:bottom-auto left-0 w-full mt-1 bg-tertiary border-secondary rounded-2xl md:rounded-md options-container md:mx-0 px-1 py-2 md:py-0 md:px-0 text-sm md:text-xs z-40">
+                          <p class="pl-4 text-left text-sm py-3 font-semibold md:hidden">Select a Bot Status</p>
+                          <!-- Options -->
+                          <button type="button" id="botStatus-online"
+                            class="clickable-input hover:opacity-100 opacity-70 block w-full px-4 py-2 text-left text-primary"
+                            onclick="setBotStatus('online', true, mobileStatus);">
+                            <span class="inline-flex items-center space-x-2">
+                              <span class="text-green-500"><i class="ri-checkbox-blank-circle-fill"></i></span>
+                              <span>Online</span>
+                            </span>
+                          </button>
+                          <button type="button" id="botStatus-idle"
+                            class="clickable-input hover:opacity-100 opacity-70 block w-full px-4 py-2 text-left text-primary"
+                            onclick="setBotStatus('idle', true, mobileStatus);">
+                            <span class="inline-flex items-center space-x-2">
+                              <span style="color: #FAA61A; transform: scaleX(-1);"><i class="ri-moon-fill"></i></span>
+                              <span>Idle</span>
+                            </span>
+                          </button>
+                          <button type="button" id="botStatus-dnd"
+                            class="clickable-input hover:opacity-100 opacity-70 block w-full px-4 py-2 text-left text-primary"
+                            onclick="setBotStatus('dnd', true, mobileStatus);">
+                            <span class="inline-flex items-center space-x-2">
+                              <span class="text-red-500"><i class="ri-indeterminate-circle-fill"></i></span>
+                              <span>Do Not Disturb</span>
+                            </span>
+                          </button>
+                          <button type="button" id="botStatus-invisible"
+                            class="clickable-input hover:opacity-100 opacity-70 block w-full px-4 py-2 text-left text-primary"
+                            onclick="setBotStatus('invisible', true);">
+                            <span class="inline-flex items-center space-x-2">
+                              <span style="color: #747e8c;"><i class="ri-checkbox-blank-circle-line"></i></span>
+                              <span>Invisible</span>
+                            </span>
+                          </button>
+                        </div>
+                      </div>
+
+                    </div>
+                    <!-- mobile/desktop select menu -->
+                    <div class="relative custom-select mt-3 w-full md:w-1/4">
+                      <!-- custom-select -->
+                      <!-- Select button -->
+                      <button type="button" class="flex items-center justify-between w-full px-4 py-3 text-left bg-tertiary rounded text-xs disabled-check"
+                        id="client-type-input">
+                        <span>
+                          <p class="text-secondary whitespace-nowrap">Type</p>
+                        </span>
+                        <i class="select-icon ri-arrow-right-s-line"></i> <!-- select icon -->
+                      </button>
+                      <!-- Options (not dat options but dat container) -->
+                      <div class="relative">
+                        <div class="md:hidden">
+                          <div class="fixed inset-0 bg-black opacity-70 w-screen h-screen hidden z-20 options-background"></div>
+                        </div>
+                        <div
+                          class="fixed bottom-0 pb-40 md:pb-0 md:absolute md:top-full md:bottom-auto left-0 w-full mt-1 bg-tertiary border-secondary rounded-2xl md:rounded-md options-container md:mx-0 px-1 py-2 md:py-0 md:px-0 text-sm md:text-xs z-40">
+                          <p class="pl-4 text-left text-sm py-3 font-semibold md:hidden">Select an Activity Type</p>
+                          <!-- options-container -->
+                          <!-- Options -->
+                          <button type="button" id="statusType-mobile"
+                            class="clickable-input hover:opacity-100 opacity-70 block w-full px-4 py-2 text-left text-primary"
+                            onclick="setStatusType('mobile', true); setBotStatus(botStatus, true, mobileStatus);">
+                            <span class="inline-flex items-center space-x-2">
+                              <span class="text-primary"><i class="ri-smartphone-line"></i></span>
+                              <span>Mobile</span>
+                            </span>
+                          </button>
+                          <button type="button" id="statusType-desktop"
+                            class="clickable-input hover:opacity-100 opacity-70 block w-full px-4 py-2 text-left text-primary"
+                            onclick="setStatusType('desktop', true); setBotStatus(botStatus, true, mobileStatus);">
+                            <span class="inline-flex items-center space-x-2">
+                              <span class="text-primary"><i class="ri-computer-line"></i></span>
+                              <span>Desktop</span>
+                            </span>
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <!-- Activity Select Menu and Input -->
+                  <div class="block md:flex mt-3">
+
+                    <p class="uppercase text-secondary text-xxs block md:hidden mb-3">Activity</p> <!-- mobile label only -->
+
+                    <!-- Discord activity select menu -->
+                    <div class="relative custom-select w-full md:w-1/2 mr-2">
+                      <!-- Select button -->
+                      <button type="button" class="flex items-center justify-between w-full px-4 py-3 text-left bg-tertiary rounded text-xs">
+                        <span>
+                          <p class="text-secondary">Select an activity</p>
+                        </span>
+                        <i class="select-icon ri-arrow-right-s-line"></i>
+                      </button>
+                      <!-- Options container (hidden by default) -->
+                      <div class="relative">
+                        <div class="md:hidden">
+                          <div class="fixed inset-0 bg-black opacity-70 w-screen h-screen hidden z-20 options-background"></div>
+                        </div>
+                        <div
+                          class="fixed bottom-0 pb-40 md:pb-0 md:absolute md:top-full md:bottom-auto left-0 w-full mt-1 bg-tertiary border-secondary rounded-2xl md:rounded-md options-container md:mx-0 px-1 py-2 md:py-0 md:px-0 text-sm md:text-xs z-40">
+                          <p class="pl-4 text-left text-sm py-3 font-semibold md:hidden">Select an Activity</p>
+                          <!-- Options -->
+                          <button type="button" class="clickable-input hover:opacity-100 opacity-70 block w-full px-4 py-2 text-left text-primary"
+                            onclick="setActivityType('Playing', true, this.id);" id="activityType-playing">
+                            <span class="inline-flex items-center space-x-2">
+                              <span class="text-primary"><i class="ri-gamepad-line"></i></span>
+                              <span>Playing</span>
+                            </span>
+                          </button>
+                          <button type="button" class="clickable-input hover:opacity-100 opacity-70 block w-full px-4 py-2 text-left text-primary"
+                            onclick="setActivityType('Watching', true, this.id);" id="activityType-watching">
+                            <span class="inline-flex items-center space-x-2">
+                              <span class="text-primary"><i class="ri-movie-2-fill"></i></span>
+                              <span>Watching</span>
+                            </span>
+                          </button>
+                          <button type="button" class="clickable-input hover:opacity-100 opacity-70 block w-full px-4 py-2 text-left text-primary"
+                            onclick="setActivityType('Competing in', true, this.id);" id="activityType-competing">
+                            <span class="inline-flex items-center space-x-2">
+                              <span class="text-primary"><i class="ri-trophy-fill"></i></span>
+                              <span>Competing in</span>
+                            </span>
+                          </button>
+                          <button type="button" class="clickable-input hover:opacity-100 opacity-70 block w-full px-4 py-2 text-left text-primary"
+                            onclick="setActivityType('Listening to', true, this.id);" id="activityType-listening">
+                            <span class="inline-flex items-center space-x-2">
+                              <span class="text-primary"><i class="ri-music-fill"></i></span>
+                              <span>Listening to</span>
+                            </span>
+                          </button>
+                          <button type="button" class="clickable-input hover:opacity-100 opacity-70 block w-full px-4 py-2 text-left text-primary"
+                            onclick="setActivityType('Streaming', true, this.id);" id="activityType-streaming">
+                            <span class="inline-flex items-center space-x-2">
+                              <span class="text-primary"><i class="ri-twitch-fill"></i></span>
+                              <span>Streaming</span>
+                            </span>
+                          </button>
+                          <button type="button" class="clickable-input hover:opacity-100 opacity-70 block w-full px-4 py-2 text-left text-primary"
+                            onclick="setActivityType('Custom', true, this.id);" id="activityType-custom">
+                            <span class="inline-flex items-center space-x-2">
+                              <span class="text-primary"><i class="ri-file-edit-fill"></i></span>
+                              <span>Custom</span>
+                            </span>
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+
+                    <!-- Activity text input -->
+                    <div class="relative w-full mt-3 md:w-1/2 md:mt-0">
+                      <input type="text" id="activity-text-input" class="bg-tertiary w-full pl-10 pr-4 py-3 rounded text-xs focus:outline-none"
+                        placeholder="Activity Text" minlength="1" maxlength="32" spellcheck="false" oninput="setActivityText(this.value);">
+                      <i class="ri-pencil-line absolute left-3 top-1/2 transform -translate-y-1/2 text-secondary"></i>
+                    </div>
+                  </div>
+
+                  <p class="text-2xxs text-secondary mr-auto mt-2 hidden md:block">* Upon saving, changes may not be immediate, with potential
+                    delays ranging from seconds to
+                    minutes or longer.</p>
+                </div>
+                <!-- Third Column -->
+                <div class="flex flex-col items-center lg:w-1/4 lg:flex-grow-0">
+                  <!-- Placeholder Content -->
+                  <div class="w-full h-fit bg-tertiary rounded-lg mb-4 py-5 pl-5 pr-7 overflow-x-auto max-w-screen mt-5 lg:max-w-80 lg:mt-0">
+                    <p class="text-xxs text-secondary uppercase font-bold mb-3" id="bot-role-preview">Bot Preview</p>
+                    <div class="flex items-center space-x-3 overflow-x-auto overflow-y-hidden whitespace-nowrap pb-2" id="bot-preview"
+                      style="max-width: 250px;">
+                      <!-- Avatar -->
+                      <div class="relative w-10 h-10">
+                        <img id="bot-avatar-2" src="https://docs.botforge.org/media/karl_sm.webp" alt="Avatar" class="rounded-full w-10 h-10"
+                          style="min-width: 2.5rem; min-height: 2.5rem;">
+                        <!-- Status Dot -->
+                        <div class="relative status-container" id="bot-status">
+                          <div id="normal-status">
+                            <span class="absolute text-xs z-20 first-icon" style="bottom: -3px; right: -1px; color: rgb(67, 181, 129);" id="status-icon-1"><i
+                                class="ri-checkbox-blank-circle-fill"></i></span>
+                            <i class="ri-checkbox-blank-circle-fill absolute text-xl second-icon" style="bottom: -9px;right: -5px; color: var(--color-ui-shade)"
+                              id="status-icon-2"></i>
+                          </div>
+                          <div id="streaming-status" class="hidden">
+                            <span class="absolute text-xs z-30 first-icon" style="bottom: -3px;right: -1px; color: #593695;"><i
+                                class="ri-play-circle-fill"></i></span>
+                            <i class="ri-checkbox-blank-circle-fill absolute text-xl second-icon"
+                              style="bottom: -9px;right: -5px; color: var(--color-ui-shade)"></i>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="flex flex-col">
+                        <!-- Botname and Badge -->
+                        <div class="flex items-center" style="max-width: 195px;">
+                          <h3 class="text-sm text-primary font-semibold truncate" id="bot-name-preview">Bot Name</h3>
+                          <!-- Badge (BOT) -->
+                          <span class="bg-blurple px-1 rounded text-tertiary text-2xxs ml-1"
+                            style="padding-top: 1px; padding-bottom: 1px; min-width: fit-content;"><i class="ri-check-line hidden" id="verified-bot"></i>
+                            BOT</span>
+                        </div>
+                        <!-- Activity -->
+                        <p class="text-xxs text-secondary leading-none" id="bot-activity-preview"><span id="activity-type">Built
+                            using</span> <span id="activity-text" class="font-semibold">BotForge <i class="font-normal ri-file-list-2-fill"></i></span></p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Client Content, settings sidebar -->
+        <div class="tab-content" id="client-content">
+
+          <div id="client-savepopup"></div>
+
+          <div class="flex-shrink-0 mt-3 mb-5">
+            <!-- Personalize Tab -->
+            <div class="rounded-lg bg-alt-secondary border-primary">
+              <div class="bg-alt-primary px-4 py-3 rounded-t-lg">
+                <h2 class="text-xs text-primary"><i class="ri-settings-6-line"></i> Client Settings</h2>
+              </div>
+              <div class="w-full bg-alt-secondary p-3 md:p-4 rounded-md">
+
+                <section class="bot-options border-b-primary pb-5">
+
+                  <!-- Password Input with Reveal Token Button -->
+
+                  <label for="client-token" class="text-secondary text-2xxs uppercase mb-1 mt-4 font-semibold flex items-center justify-between">Bot Token
+                    <a class="cursor-pointer uppercase ml-auto text-2xxs text-colored" data-tippy-content="<span class='normal-case font-normal'>
+                  <b>Q: Where can I reset my Bot Token?</b><br>
+                  A: You can reset your Bot Token on <a href='https://discord.com/developers/applications' class='text-colored' target='_blank'><i class='ri-external-link-line'></i> Discord's Developer Portal</a>.
+                  <br><br>
+                  <b>Q: Who can access my Bot Token?</b><br>
+                  A: Any member of your BotForge Panel Team with ManageBot permissions can access your Bot Token.
+                  <br><br>
+                  <b>Q: Can I have two bots with the same Bot Token?</b><br>
+                  A: Absolutely, you can even use the same Bot Token across other languages and bot-making tools. However, be advised that doing so may cause issues with Slash Commands.
+                  </span>
+                  " data-tippy-interactive="true" ;><i class="ri-pushpin-2-fill"></i> Frequently Asked Questions</a>
+                  </label>
+
+                  <div class="relative select-none">
+                    <i class="ri-lock-password-line absolute left-3 top-1/2 transform -translate-y-1/2 text-secondary"></i>
+                    <input type="password" id="client-token" class="bg-secondary border-primary w-full pl-10 py-3 rounded-lg text-xs focus:outline-none"
+                      placeholder="Your Bot Token" minlength="50" spellcheck="false">
+                    <button id="reveal-token-btn"
+                      class="absolute right-3 top-1/2 transform -translate-y-1/2 px-1 py-1 rounded bg-secondary text-sm text-secondary hover:text-primary focus:outline-none"
+                      data-tippy-content="Toggle Visibility"><i class="ri-eye-line"></i></button>
+                  </div>
+
+                  <!-- Prefixes -->
+                  <label for="bot-prefix" class="text-secondary text-2xxs uppercase mb-1 mt-4 font-semibold flex items-center justify-between">Bot Prefixes
+
+                    <a class="cursor-pointer uppercase ml-auto text-2xxs text-colored" data-tippy-content="<span class='normal-case font-normal'>
+<b>Q: Can I use multiple prefixes?</b><br>
+A: Yes, simply separate them by commas, like this: prefix1, prefix2... etc.
+<br><br>
+<b>Q: Can I use a variable as a prefix?</b><br>
+A: Yes, you can use not only a variable but any piece of code in general.
+<br><br>
+<b>Q: How can I use my bot's mention as a prefix?</b><br>
+A: Simply use <b><@$clientID>, <@!$clientID></b> as the prefix.
+<br><br>
+<b>Q: What if I want my bot prefix to be a comma?</b><br>
+A: If you want to use a comma or multiple as prefix, simply use the <b>{comma}</b> placeholder.
+
+                  </span>
+                  " ;><i class="ri-pushpin-2-fill"></i> Frequently Asked Questions</a>
+
+                  </label>
+
+                  <div class="relative select-none">
+                    <i class="ri-asterisk absolute left-3 top-1/2 transform -translate-y-1/2 text-secondary"></i>
+                    <input type="text" id="bot-prefix" class="bg-secondary border-primary w-full pl-10 py-3 rounded-lg text-xs focus:outline-none"
+                      placeholder="Your Bot Prefix(es)" spellcheck="false">
+                  </div>
+
+                  <div id="prefix-tags" class="flex flex-wrap mt-2"></div>
+
+                  <a class="text-secondary text-2xxs uppercase mt-4 font-semibold flex items-center justify-between">Client Options</a>
+                  <section class="border-primary bg-secondary px-5 rounded-lg space-y-5 pb-5 pt-4 mt-1">
+
+                    <!-- Use Invite System -->
+                    <div class="flex items-center justify-between individual-setting pb-5 border-b-primary">
+                      <div>
+                        <label for="client-useInviteSystem" class="text-primary font-normal text-xs cursor-pointer select-none">
+                          Invite System
+                        </label>
+
+                        <p class="text-xs text-secondary mt-1">Whether you intend for your bot to track invites or not, if you do not
+                          plan to implement an
+                          invite system, there's no need to enable this feature.</p>
+                      </div>
+
+                      <label for="client-useInviteSystem" data-tippy-content="Enable or Disable!">
+                        <div class="relative flex items-center cursor-pointer select-none">
+                          <input type="checkbox" id="client-useInviteSystem" class="sr-only">
+                          <div class="block toggle-bg w-10 h-6 rounded-full transition duration-300">
+                            <div class="dot absolute left-1 top-1 bg-white w-4 h-4 rounded-full transition duration-200"></div>
+                          </div>
+                        </div>
+                      </label>
+                    </div>
+
+                    <!-- Respond on Edit -->
+                    <div class="flex items-center justify-between individual-setting">
+                      <div>
+
+                        <label for="client-respondOnEdit" class="text-primary font-normal text-xs cursor-pointer select-none">
+                          Respond on Edit
+                        </label>
+
+                        <p class="text-xs text-secondary mt-1">Whether you want your bot to respond to commands on edit or not.</p>
+
+                        <a class="text-colored mt-1 text-xxs cursor-help" target="_blank" data-tippy-content="
+        <b>Respond on Edit</b><br>
+        <p class='text-xxs text-tertiary'>Your bot will execute commands even when a message is edited to a valid command, not only when new messages are sent.</p>
+        <img src='/assets/previewRespondOnEdit.gif' class='rounded-md mt-1'>
+        "><i class="ri-code-s-slash-line"></i> Preview</a>
+
+                      </div>
+
+                      <label for="client-respondOnEdit" data-tippy-content="Enable or Disable!">
+                        <div class="relative flex items-center cursor-pointer select-none">
+                          <input type="checkbox" id="client-respondOnEdit" class="sr-only">
+                          <div class="block toggle-bg w-10 h-6 rounded-full transition duration-300">
+                            <div class="dot absolute left-1 top-1 bg-white w-4 h-4 rounded-full transition duration-200"></div>
+                          </div>
+                        </div>
+                      </label>
+                    </div>
+
+                  </section>
+
+                </section>
+
+                <section class="events space-y-2 border-t-primary pt-5">
+
+                  <div>
+                    <p class="text-primary text-xxs uppercase font-semibold">Events</p>
+                    <p class="text-secondary text-xxs">Discord events are triggers that are fired when specific actions or occurrences
+                      happen in a Discord
+                      server, in order to use an event you must enable it here.</p>
+                  </div>
+
+                  <div id="events-list" class="border-primary bg-secondary px-3 md:px-5 rounded-lg space-y-8 pb-5 pt-2 md:pt-4">
+
+                    <!-- toggle all events -->
+                    <div class="flex items-center justify-between individual-setting pb-4 border-b-primary">
+                      <div>
+                        <label for="toggle-all-events" class="text-primary font-normal text-xs cursor-pointer select-none">
+                          All Events
+                        </label>
+                        <div>
+                          <a class="text-xs text-colored mt-2 cursor-pointer" onclick="toggleEventsDropdown(this)">
+                            Show Warning <i class="ri-arrow-drop-right-line" data-icon="arrow"></i>
+                          </a>
+                          <div class="events-list mt-2 mr-5 border-primary py-3 px-4 rounded-lg text-colored hidden">
+                            <ul class="text-xxs">
+                              <p><i class="ri-alert-line"></i> All events will be unlocked if you enable this option.</p>
+                              <br>
+                              <p>
+                                It's generally recommended to selectively enable only the events that are essential for your
+                                bot's functionality. This approach
+                                not only safeguards user privacy but also enhances the overall performance of your bot by
+                                minimizing the retrieval of
+                                unnecessary event data.
+                              </p>
+                              <br>
+                              <p>
+                                If your bot genuinely requires access to all events and its required intents, is still in
+                                development, or is not intended for
+                                public use, you may proceed with caution.
+                              </p>
+                            </ul>
+                          </div>
+                        </div>
+                      </div>
+                      <label for="toggle-all-events">
+                        <div class="relative flex items-center cursor-pointer select-none" data-tippy-content="Enable or Disable!">
+                          <input type="checkbox" id="toggle-all-events" class="sr-only">
+                          <div class="block toggle-bg w-10 h-6 rounded-full transition duration-300">
+                            <div class="dot absolute left-1 top-1 bg-white w-4 h-4 rounded-full transition duration-200"></div>
+                          </div>
+                        </div>
+                      </label>
+                    </div>
+
+                  </div>
+
+                </section>
+
+                <!-- Intents toggles -->
+                <section class="intents space-y-2">
+
+                  <div>
+                    <p class="text-primary text-xxs uppercase mt-2 font-semibold">Intents</p>
+                    <p class="text-secondary text-xxs">When you enable or disable events, the corresponding intents are automatically
+                      enabled to meet the
+                      requirements of the enabled event. Therefore, only modify this switches if you are confident in your understanding
+                      of intents, remember
+                      that certain events may require specific intents. <a href="https://gist.github.com/advaith1/e69bcc1cdd6d0087322734451f15aa2f"
+                        target="_blank" class="text-colored">Learn more</a>.</p>
+                  </div>
+
+                  <div id="intents-list" class="border-primary bg-secondary px-5 rounded-lg space-y-5">
+                    <div class="flex items-center justify-between individual-setting pb-4 border-b-primary pt-4">
+                      <div>
+                        <label for="toggle-all-intents" class="text-primary font-normal text-xs cursor-pointer select-none">
+                          All Intents
+                        </label>
+                        <div>
+                          <a class="text-xs text-colored mt-2 cursor-pointer" onclick="toggleEventsDropdown(this)">
+                            Show Warning <i class="ri-arrow-drop-right-line" data-icon="arrow"></i>
+                          </a>
+                          <div class="events-list mt-2 mr-5 border-primary py-3 px-4 rounded-lg text-colored hidden">
+                            <ul class="text-xxs">
+                              <p><i class="ri-alert-line"></i> All events will be unlocked if you enable this option.</p>
+                              <br>
+                              <p>
+                                It's generally recommended to selectively enable only the intents that are essential for your
+                                bot's functionality. This approach
+                                not only safeguards user privacy but also enhances the overall performance of your bot by
+                                minimizing the retrieval of
+                                unnecessary event data.
+                              </p>
+                              <br>
+                              <p>
+                                If your bot genuinely requires access to all intents, is still in development, or is not
+                                intended for public use, you may
+                                proceed with caution.
+                              </p>
+                            </ul>
+                          </div>
+                        </div>
+                      </div>
+                      <label for="toggle-all-intents">
+                        <div class="relative flex items-center cursor-pointer select-none" data-tippy-content="Enable or Disable!">
+                          <input type="checkbox" id="toggle-all-intents" class="sr-only">
+                          <div class="block toggle-bg w-10 h-6 rounded-full transition duration-300">
+                            <div class="dot absolute left-1 top-1 bg-white w-4 h-4 rounded-full transition duration-200"></div>
+                          </div>
+                        </div>
+                      </label>
+                    </div>
+                    <!-- predefined GUILDS intent -->
+                    <div class="flex items-center justify-between individual-setting pb-4 border-b-primary">
+                      <div>
+                        <label for="intents-guilds" class="text-secondary font-semibold text-xs cursor-pointer select-none disabled-check">
+                          Guilds *
+                        </label>
+                        <div>
+                          <a class="text-xs text-colored mt-2 cursor-pointer" onclick="toggleEventsDropdown(this)" id="guilds-showEvents">
+                            Show Events <i class="ri-arrow-drop-right-line" data-icon="arrow"></i>
+                          </a>
+                          <div class="events-list mt-2 border-primary py-3 px-4 rounded-lg text-colored hidden">
+                            <ul class="text-xs">
+                              <li>guildCreate</li>
+                              <li>guildUpdate</li>
+                              <li>guildDelete</li>
+                              <li>guildRoleCreate</li>
+                              <li>guildRoleUpdate</li>
+                              <li>guildRoleDelete</li>
+                              <li>channelCreate</li>
+                              <li>channelUpdate</li>
+                              <li>channelDelete</li>
+                              <li>channelPinsUpdate</li>
+                              <li>threadCreate</li>
+                              <li>threadUpdate</li>
+                              <li>threadDelete</li>
+                              <li>threadListSync</li>
+                              <li>threadMemberUpdate</li>
+                              <li>threadMembersUpdate</li>
+                              <li>stageInstanceCreate</li>
+                              <li>stageInstanceUpdate</li>
+                              <li>stageInstanceDelete</li>
+                            </ul>
+                          </div>
+                        </div>
+                      </div>
+                      <label for="intents-guilds" class="disabled-check">
+                        <div class="relative flex items-center cursor-pointer select-none" data-tippy-content="Enable or Disable!">
+                          <input type="checkbox" id="intents-guilds" class="sr-only" checked>
+                          <div class="block toggle-bg w-10 h-6 rounded-full transition duration-300">
+                            <div class="dot absolute left-1 top-1 bg-white w-4 h-4 rounded-full transition duration-200"></div>
+                          </div>
+                        </div>
+                      </label>
+                    </div>
+                    <!-- dynamic intents also... -->
+                  </div>
+                </section>
+
+              </div>
+            </div>
+          </div>
+
+        </div> <!-- close client-content tab -->
+
+        <!-- General settings content, settings sidebar -->
+        <div class="tab-content" id="general-content">
+
+          <div class="rounded-lg bg-alt-secondary border-primary mt-3">
+            <div class="bg-alt-primary px-4 py-3 rounded-t-lg">
+              <h2 class="text-xs text-primary"><i class="ri-settings-3-line"></i> General</h2>
+            </div>
+            <div class="w-full bg-alt-secondary p-5 rounded-md">
+
+              <div id="generalsettings-container"></div>
+
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Themes content, settings sidebar -->
+        <div class="tab-content" id="themes-content">
+
+          <div id="themes-savepopup"></div>
+
+          <div class="py-5 px-5">
+
+            <div class="flex items-center justify-between mb-4">
+              <div class="flex items-center">
+                <h1 class="text-lg font-semibold">Themes</h1>
+                <!--
+        <span class="opacity-30 mx-3 text-secondary text-sm">|</span>
+        <a href="#" class="button-gradient text-tertiary px-6 py-2 rounded text-xs">Import Theme</a>
+        -->
+              </div>
+              <!--
+    <a href="#" class="uppercase text-2xxs text-colored ml-auto">
+        <i class="ri-palette-line"></i> Themes Store
+    </a>
+    -->
+            </div>
+
+            <div id="themes-selector" class="flex overflow-x-auto items-center pb-4 border-b-primary"></div>
+
+            <a class="text-secondary text-2xxs uppercase font-semibold pt-4">
+              Accent Color
+            </a>
+            <div class="flex items-center">
+              <div class="w-full md:w-1/2 relative">
+
+                <div class="flex justify-center">
+                  <div id="slider-value" class="bg-alt-primary px-2 py-0 rounded-full border-secondary text-xxs text-primary my-3">0°</div>
+                </div>
+
+                <div class="slide-ignore">
+                  <input type="range" min="0" max="360" value="0"
+                    class="slider appearance-none w-full h-2 bg-gradient-to-r from-purple-400 to-purple-800 rounded-lg outline-none" id="hue-slider"
+                    style="filter: hue-rotate(0deg);" oninput="setHueSlider(this.value);">
+                  <div id="color-preview" class="w-full mt-3">
+                    <img id="color-image" src="/assets/panelPreview.png" alt="Panel Preview" class="w-full h-full object-cover rounded-lg border-primary">
+                    <p class="text-secondary text-2xxs pt-2">* This preview is only a representation and may not be entirely accurate, depending
+                      on your panel
+                      theme.</p>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+
+          </div>
+
+        </div>
+
+        <!-- Invite your bot tab -->
+        <div class="tab-content" id="invite-content">
+
+          <div class="mb-6 rounded-lg bg-alt-secondary border-primary">
+            <div class="bg-alt-primary px-4 py-3 rounded-t-lg">
+              <h2 class="text-xs text-primary"><i class="ri-rocket-2-line"></i> Invite Your Bot</h2>
+            </div>
+            <div class="w-full bg-alt-secondary p-5 rounded-md">
+
+              <div id="inviteBot-iframe" class="h-screen"></div>
+
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Start Servers Tab -->
+        <div class="tab-content hidden" id="servers-content">
+          <div class="flex items-center justify-between mt-3">
+            <div class="flex items-center">
+              <h1 class="text-lg font-semibold hidden md:block">Servers</h1>
+            </div>
+            <div class="relative select-none w-full md:w-auto">
+              <span class="text-secondary hover:text-primary cursor-pointer" onclick="sortTable('servers')" data-tippy-content="Sort Servers"><i
+                  id="servers-sortIcon" class="ri-sort-asc"></i></span>
+              <input type="text" class="ignore-changes bg-alt-primary px-3 py-2 rounded-lg text-xs focus:outline-none ml-1 w-11/12 md:w-auto"
+                placeholder="Search..." oninput="searchTable(this.value, 'servers')" id="search-servers">
+              <button type="button" class="absolute right-3 top-1/2 transform -translate-y-1/2 text-secondary focus:outline-none">
+                <i class="ri-search-line"></i>
+              </button>
+            </div>
+          </div>
+          <!-- not found -->
+          <div id="not-found-servers" class="hidden flex flex-col items-center justify-center mt-10">
+            <i class="ri-search-line text-6xl text-colored"></i>
+            <p class="text-xs text-primary mt-2">No matching servers found!</p>
+          </div>
+          <!-- servers table -->
+          <section class="container mt-3" id="table-servers">
+            <div class="w-full mb-8 overflow-hidden">
+              <div class="w-full overflow-x-auto rounded-lg">
+                <table class="w-full bg-alt-secondary border-primary">
+                  <thead>
+                    <tr class="text-xs tracking-wide text-left text-primary capitalize bg-alt-primary select-none">
+                      <th class="px-4 py-3 text-xxs font-normal">Name</th>
+                      <th class="px-4 py-3 text-xxs font-normal">Members</th>
+                      <th class="px-4 py-3 text-xxs font-normal">Server Owner</th>
+                      <th class="px-4 py-3 text-xxs font-normal">Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody id="servers-rows">
+                    <!-- individual server data -->
+                    <tr class="text-secondary border-b-primary whitespace-nowrap" data-server-id="Guild ID Here" data-server-name="Guild Name Here">
+                      <td class="px-4 py-3">
+                        <div class="flex items-center text-sm">
+                          <div class="relative w-8 h-8 mr-3 rounded-full md:block">
+                            <img class="object-cover w-full h-full rounded-full" src="https://docs.botforge.org/media/karl_sm.webp"
+                              alt="${serverName}'s server icon." loading="lazy" />
+                            <div class="absolute inset-0 rounded-full shadow-inner" aria-hidden="true"></div>
+                          </div>
+                          <div>
+                            <p class="font-normal text-xs text-primary leading-none">Server Name</p>
+                            <p class="text-xxs leading-none mt-1">Community</p>
+                          </div>
+                        </div>
+                      </td>
+                      <td class="px-4 py-3 text-xs font-normal"><span class="text-green-500">●</span> 22<span class="opacity-50"> /
+                        </span>500</td>
+                      <td class="px-4 py-3 text-xs">
+                        <div class="rounded-full border-gray px-1 py-1 inline-block">
+                          <img src="https://docs.botforge.org/media/karl_sm.webp" alt="Owner's Avatar" class="w-4 h-4 rounded-full inline-block mr-1">
+                          <span class="inline-block pr-1">Owner Name</span>
+                        </div>
+                      </td>
+                      <td class="px-4 py-3 text-base space-x-2 select-none">
+                        <i class="ri-file-copy-2-line cursor-pointer" onclick="copyServerID();" data-tippy-content="Copy Server ID"></i>
+                        <span class="servers-more-actions"><i class="ri-more-2-line cursor-pointer" data-tippy-content="More Actions"
+                            data-tippy-delay="[1000]"></i></span>
+                      </td>
+                    </tr>
+                    <!-- end individual server data -->
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </section>
+          <!-- end table -->
+        </div>
+        <!-- End Servers Tab -->
+
+        <!-- Team Tab -->
+        <div class="tab-content hidden" id="team-content">
+
+          <div id="team-savepopup"></div>
+
+          <div class="flex flex-col md:flex-row items-center justify-between mt-3">
+            <div class="flex items-center mb-4 md:mb-0 mr-auto"> <!-- Members and Add Member section -->
+              <h1 class="text-lg font-semibold">Members</h1>
+              <span class="opacity-30 mx-3 text-secondary text-sm">|</span>
+              <a class="cursor-pointer button-gradient text-tertiary px-6 py-2 rounded text-xs" onclick="addTeamMember();">Add Member</a>
+            </div>
+            <!-- Search section -->
+            <div class="relative select-none md:ml-4 w-full md:w-auto">
+              <span class="text-secondary hover:text-primary cursor-pointer w-1/12 md:w-auto" onclick="sortTable('member')"
+                data-tippy-content="Sort Team Members"><i id="member-sortIcon" class="ri-sort-asc"></i></span>
+              <input type="text" class="ignore-changes bg-alt-primary px-3 py-2 rounded-lg text-xs focus:outline-none ml-1 w-11/12 md:w-auto"
+                placeholder="Search..." oninput="searchTable(this.value, 'member')" id="search-members">
+              <button type="button" class="absolute right-3 top-1/2 transform -translate-y-1/2 text-secondary focus:outline-none">
+                <i class="ri-search-line"></i>
+              </button>
+            </div>
+          </div>
+          <!-- not found -->
+          <div id="not-found-member" class="hidden flex flex-col items-center justify-center mt-10">
+            <i class="ri-search-line text-6xl text-colored"></i>
+            <p class="text-xs text-primary mt-2">No matching members found!</p>
+          </div>
+          <section class="container mt-3" id="table-member">
+            <div class="w-full mb-8 overflow-hidden">
+              <div class="w-full overflow-x-auto rounded-lg">
+                <table class="w-full bg-alt-secondary border-primary">
+                  <thead>
+                    <tr class="text-xs tracking-wide text-left text-primary capitalize bg-alt-primary select-none">
+                      <th class="px-4 py-3 text-xxs font-normal">Name</th>
+                      <th class="px-4 py-3 text-xxs font-normal">Joined</th>
+                      <th class="px-4 py-3 text-xxs font-normal">Permissions</th>
+                      <th class="px-4 py-3 text-xxs font-normal">Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody id="member-rows">
+                    <!-- individual server data -->
+                    <tr class="text-secondary border-b-primary whitespace-nowrap" data-member-id="MEMBER ID HERE" data-member-name="MEMBER NAME HERE"
+                      data-member-permissions="['ManageBot', 'ManageCommands']">
+                      <td class="px-4 py-3">
+                        <div class="flex items-center text-sm">
+                          <div class="relative w-8 h-8 mr-3 rounded-full md:block">
+                            <img class="object-cover w-full h-full rounded-full" src="https://docs.botforge.org/media/karl_sm.webp"
+                              alt="${serverName}'s server icon." loading="lazy" />
+                            <div class="absolute inset-0 rounded-full shadow-inner" aria-hidden="true"></div>
+                          </div>
+                          <div>
+                            <p class="font-normal text-xs text-primary leading-none">Display Name</p>
+                            <p class="text-xxs leading-none mt-1">Username</p>
+                          </div>
+                        </div>
+                      </td>
+                      <td class="px-4 py-3 text-xs font-normal">
+                        01 March, 2024, 11:00 AM.
+                      </td>
+                      <td class="px-4 py-3 text-xs">
+                        <a class="text-colored cursor-pointer" onclick="viewPermissions();">View Permissions</a>
+                      </td>
+                      <td class="px-4 py-3 text-base space-x-2 select-none">
+                        <i class="ri-file-copy-2-line cursor-pointer" onclick="copyUserID();" data-tippy-content="Copy User ID"></i>
+                        <span class="team-more-actions"><i class="ri-more-2-line cursor-pointer" data-tippy-content="More Actions"
+                            data-tippy-delay="[1000]"></i></span>
+                      </td>
+                    </tr>
+                    <!-- end individual server data -->
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </section>
+
+        </div>
+
+        <!-- end tabs content -->
+
+        <p class="text-secondary text-xxs text-center py-5">© 2020 - <span id="copyright-brand-year">Current Year,</span> BotForge.</p>
+
+      </div>
+
+    </div> <!-- end main bar -->
+
+    <!-- Right Sidebar Content -->
+    <div
+      class="fixed bg-secondary pl-3 pr-1 w-full md:w-44 flex flex-col items-start space-y-2 md:relative h-full md:h-auto top-0 right-0 md:top-auto md:right-auto z-30"
+      id="right-sidebar">
+      <div class="max-h-screen my-3 overflow-auto sidebar-content space-y-3 w-full" id="sidebar-widgets">
+        <div class="rounded-lg h-fit w-full bg-alt-secondary border-primary break-all">
+          <!-- packages widget -->
+          <div class="bg-alt-primary px-4 py-3 rounded-t-lg">
+            <h2 class="text-xs text-primary"><i class="ri-upload-cloud-2-line"></i> Packages</h2>
+          </div>
+          <div class="bar-content px-2 py-2 text-xxs">
+            <!-- start individual -->
+            <div class="bg-alt-primary border-secondary rounded-full py-1 px-1 flex items-center mb-1">
+              <!-- Icon -->
+              <div class="h-7 w-7 text-center rounded-full bg-tertiary border-secondary flex items-center justify-center">
+                <i class="ri-box-2-line text-sm"></i>
+              </div>
+              <!-- Details -->
+              <div class="ml-2">
+                <div class="font-normal text-primary leading-none text-primary text-xxs">ForgeScript</div>
+                <div class="text-green-400 leading-none text-2xxs"><i class="ri-check-line"></i> Up To Date</div>
+              </div>
+            </div>
+            <!-- end individual -->
+            <div class="text-center text-xxs text-colored mt-3 mb-1" onclick="if(isMobile){ goTo('mobile-tab-extensions'); return; } goTo('go-extensions')">
+              <a class="mx-auto cursor-pointer">Extensions <i class="ri-arrow-right-s-line"></i></a>
+            </div>
+          </div>
+        </div>
+        <!-- end packages widget -->
+
+        <div class="rounded-lg h-fit w-full bg-alt-secondary border-primary break-all">
+          <!-- notes widget -->
+          <div class="bg-alt-primary px-4 py-3 rounded-t-lg">
+            <h2 class="text-xs text-primary"><i class="ri-sticky-note-line"></i> Notes</h2>
+          </div>
+          <div class="bar-content px-2 py-2 text-xxs">
+            <!-- when no notes -->
+            <div class="flex flex-col items-center justify-center h-full hidden" id="widget-notes-notice">
+              <i class="ri-sticky-note-add-line text-colored text-7xl"></i>
+            </div>
+            <!-- notes -->
+            <div class="max-h-96 overflow-auto notes-list" id="local-notes">
+              <!-- Notes dynamically added here -->
+            </div>
+            <!-- end notes -->
+            <div class="text-center text-xxs text-colored mt-3 mb-1">
+              <a class="mx-auto cursor-pointer" onclick="openModal('manage-notes-modal');">Manage Notes <i class="ri-arrow-right-s-line"></i></a>
+            </div>
+          </div>
+        </div>
+        <!-- end notes widget -->
+        <!-- widget add -->
+        <a
+          class="rounded-lg h-10 w-full bg-alt-secondary border-primary break-all flex items-center justify-center new-widget-hover text-secondary disabled-check cursor-pointer">
+          <i class="ri-add-line text-center text-2xl"></i>
+        </a>
+        <!-- end widget add -->
+      </div>
+
+    </div>
+    <!-- End Right Sidebar Content -->
+
+  </div>
+
+  <div id="loader-wrapper" onclick="document.getElementById(this.id).classList.add('hidden');"
+    class="absolute z-99 inset-0 flex flex-col justify-center items-center">
+    <img src="https://docs.botforge.org/media/logo_loading_loop.gif" width="100px" height="96px" alt="BotForge.org Loading Screen Loop"
+      oncontextmenu="return false;" ondragstart="return false;">
+    <div class="mt-5 w-72 text-center">
+      <h2 class="text-xs font-semibold text-white text-center">TIP</h2>
+      <p id="tip-text" class="text-xxs text-gray-400">Starting...</p>
+    </div>
+  </div>
+
+  <!-- Packages -->
+  <script src="https://unpkg.com/@popperjs/core@2/dist/umd/popper.min.js"></script>
+  <script src="https://unpkg.com/tippy.js@6/dist/tippy-bundle.umd.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script>
+  // tippyjs
+  document.addEventListener('DOMContentLoaded', function() {
+    tippy('[data-tippy-content]', {
+      inertia: true,
+      theme: 'forge',
+      allowHTML: true
+    });
+  });
+  </script>
+
+  <!-- Custom Scripting -->
+  <script async src="/script/toast.js"></script>
+  <script async src="/script/spinner.js"></script>
+  <script src="/script/modals.js"></script>
+  <script async src="/script/savePopup.js"></script>
+  <script src="/script/utils.js"></script>
+  <script src="/script/saveData.js"></script>
+  <script async src="/script/clientSettings.js"></script>
+  <script src="/script/accentHue.js"></script>
+  <script src="/script/userSettings.js"></script>
+  <script async src="/script/clientIntents.js"></script>
+  <script src="/script/personalizeSettings.js"></script>
+
+  <script defer>
+  document.addEventListener('DOMContentLoaded', function() {
+    /* personalize tab */
+    // set bot default name
+    setBotName('Bot Name Here');
+    // is bot verified? Set to true to add the verification check to the bot's name
+    isBotVerified(false);
+    // set default bot pfp
+    setBotAvatar(
+      "https://images-ext-2.discordapp.net/external/4GJmggL9Bcc0Pvy_0zhA-9_zjkAXsQPM3vyxlb9iMGU/%3Fsize%3D2048/https/cdn.discordapp.com/avatars/852898670097858580/7e49265436d813d3db20c667203ccd73.webp?format=webp&width=264&height=264"
+    );
+    // set default banner
+    uploadBanner(
+      'https://media.discordapp.net/attachments/1146864086043344987/1219084793577209856/Discord-banner.jpg?ex=660a0430&is=65f78f30&hm=925775f28e2366dd9e6f915dcc2e0576dc926ac5a4566964bd27a2bdb9a77968&=&format=webp'
+    );
+    // set bot status (idle, dnd, online, invisible), second param must be false, third param is "mobile?" (true/false)
+    setBotStatus('idle', false, false);
+    // set activity text (playing, watching, competing, listening, streaming, custom), second param is the text, example below shows "Listening to Spotify".
+    setActivityPreview('Listening', 'Spotify', false);
+  });
+  </script>
+
+  <script>
+  /* Client Tab, sensitive information, only show this tab to members with "manageBot" permissions. */
+  // set default bot intents
+  function setDefaultClient() {
+    const tokenInput = document.getElementById('client-token');
+    const prefixesInput = document.getElementById('bot-prefix');
+    const useInviteSystem = document.getElementById('client-useInviteSystem');
+    const respondOnEdit = document.getElementById('client-respondOnEdit');
+    const popup = document.getElementById('client-savepopup');
+    popup.classList.add('hidden');
+    /* Set Default Client Data */
+    // Set Bot Token
+    tokenInput.value = "Bot Token Here"
+    // Set Bot Prefixes
+    const prefixes = ["Prefix1", "Prefix2", "Prefix3..."];
+    // Use Invite System?
+    useInviteSystem.checked = true;
+    // Respond on Edit?
+    respondOnEdit.checked = true;
+    // Enable Bot Events or Intents
+    toggleEvents(["channelCreate", "channelDelete", "emojiCreate"]);
+    toggleIntents(["GuildMembers", "GuildModeration"]);
+    /* End Default Client Data */
+    const formattedPrefixes = prefixes
+      .map(prefix => prefix.replace(',', '{comma}'))
+      .join(', ');
+    prefixesInput.value = formattedPrefixes;
+    closeSavePopup('client');
+    setTimeout(() => {
+      popup.classList.remove('hidden');
+    }, 300);
+  }
+  </script>
+
+  <script>
+  /* Extensions tab */
+  // Enable extensions by default on the extensions tab.
+  function setDefaultExtensions() {
+    enableExtensions(["ForgeDB", "ForgeTopGG"]);
+  }
+  </script>
+
+  <script src="/script/selectMenu.js"></script>
+  <script async src="/script/extensions.js"></script>
+  <script async src="/script/searchSorting.js"></script>
+  <script src="/script/dropdownMenu.js"></script>
+  <script src="/script/dropdownCalls.js"></script>
+  <script async src="/script/servers.js"></script>
+  <script async src="/script/teams.js"></script>
+  <script src="/script/rightSidebar.js"></script>
+  <script async src="/script/localNotes.js"></script>
+  <script src="/script/logging.js"></script>
+  <script src="/script/charts.js"></script>
+  <script src="/script/leftSidebar.js"></script>
+  <script src="/script/ui.js"></script>
+  <script src="/script/tabsManager.js"></script>
+  <script src="/script/tabsMapping.js"></script>
+  <script src="/script/tabsSetupMapping.js"></script>
+  <script src="/script/themesSettings.js"></script>
+  <script src="/script/modalCalls.js"></script>
+  <script src="/script/loadingScreen.js"></script>
+
+</body>
+
+</html>
