@@ -3,7 +3,6 @@
   - Add cool tooltips for each input question, with gifs
   - Change the header illustration
   - Maybe fix the underline thingy
-  - Maybe add a redirection thing
   - Add <head> metadata (Except indexing ones, add anti crawling/bots meta tags on all the panel sites so people's panels don't get indexed)
   -->
 <html lang="en">
@@ -217,7 +216,7 @@
           <!-- Success Text Labels -->
           <div class="text-green-400 text-center mx-6">
             <h1 class="font-bold text-xl">Setup Complete!</h1>
-            <p class="text-xs text-primary w-3/4 text-center m-auto border-b-primary pb-5">Congratulations! Your panel setup has been successfully completed.</p>
+            <p class="text-xs text-primary w-3/4 text-center m-auto border-b-primary pb-5">Congratulations! Your panel setup has been successfully completed, redirecting in <span id="redirect-countdown">10</span> seconds.</p>
             <section class="overflow-auto h-80">
               <p class="text-secondary text-2xxs uppercase mb-1 font-semibold flex items-center justify-between pt-5">
                 Bot ID
@@ -270,7 +269,7 @@
         </div>
         <!-- info -->
         <div class="border-b-primary my-5">
-          <div class="text-2xxs mx-5 mb-3"><i class="ri-asterisk text-secondary"></i> The asterik (*) symbol indicates that the associated input fields are required.</div>
+          <div class="text-2xxs mx-5 mb-3"><i class="ri-asterisk text-secondary"></i> The asterik (*) symbol indicates that the associated fields are required.</div>
         </div>
         <!-- end info -->
         <!-- Manage Tab Content -->
@@ -316,7 +315,7 @@
           </section>
           <section class="extensions space-y-2 hidden" id="page-2">
             <p class="text-secondary text-2xxs uppercase mt-2 font-semibold">Intents</p>
-            <div id="intents-list" class="border-primary bg-secondary px-5 rounded-lg space-y-4">
+            <div id="intents-list" class="border-primary bg-secondary px-5 rounded-lg space-y-4 max-h-80 overflow-y">
               <div class="flex items-center justify-between individual-setting pb-4 border-b-primary pt-4">
                 <div>
                   <label for="toggle-all-intents" class="text-gray-300 font-semibold text-xs cursor-pointer select-none">
@@ -403,6 +402,23 @@
               <!-- dynamic... -->
             </div>
           </section>
+          
+<section id="page-4" class="extensions space-y-5">
+<div class="max-h-80 overflow-y">
+            <p class="text-secondary text-2xxs uppercase mt-2 font-semibold">Step 1 *</p>
+            <p class="text-primary text-xs mt-2 pb-1">Copy the following URL.</p>
+<p id="url-container" class="text-purple-400 bg-alt-primary p-2 relative rounded-md">
+    <span><i id="icon" class="ri-link text-white font-normal pr-1"></i></span>
+    <span id="copy-redirection-url" class="cursor-pointer">If you see this text instead of an URL, click this text to retry, or contact us!</span>
+</p>
+            <p class="text-secondary text-2xxs uppercase mt-2 font-semibold">Step 2 *</p>
+            <p class="text-primary text-xs mt-2"><a href="https://discord.com/developers/applications" class="text-purple-400" id="userRedirectPortal" target="_blank">Click here</a>  to get redirected to Discord's Developer Portal, head to the <b>Redirects</b> section of your bot's oAuth2, and add the copied link as redirect URL, you can see an image below for reference.</p>
+            <img src="https://raw.githubusercontent.com/tryforge/ForgePanel/dashboard/assets/redirect_example.png" class="w-full my-2">
+            <p class="text-secondary text-2xxs uppercase mt-2 font-semibold">Step 3 *</p>
+            <p class="text-primary text-xs mt-5 pb-5">Click <b>Save Changes</b>, once you do just press the <b>Finish</b> button here, and you are all set!</p>
+</div>
+          </section>
+          
         </div>
         <!-- End Manage Tab Content -->
       </div>
@@ -417,6 +433,72 @@
         </div>
       </section>
     </div>
+    
+    
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const copyText = document.getElementById('copy-redirection-url');
+        const icon = document.getElementById('icon');
+        const urlContainer = document.getElementById('url-container');
+
+        function fetchURL() {
+            fetch('/link')
+                .then(response => response.json())
+                .then(data => {
+                    if (data.login) {
+                        copyText.textContent = data.login;
+                    } else {
+                        copyText.textContent = "URL Fetching Failed, click to retry!";
+                    }
+                })
+                .catch(error => {
+                    copyText.textContent = "URL Fetching Failed, click to retry!";
+                    console.error('Skill issue while fetching URL:', error);
+                });
+        }
+
+        fetchURL();
+
+        copyText.addEventListener('click', () => {
+            const url = copyText.textContent;
+
+            if (!url.includes('/') || !url.includes('.')) {
+                fetchURL();
+                return;
+            }
+
+            const tempInput = document.createElement('input');
+            tempInput.value = url;
+            document.body.appendChild(tempInput);
+            tempInput.select();
+            document.execCommand('copy');
+            document.body.removeChild(tempInput);
+
+            if (window.getSelection) {
+                const range = document.createRange();
+                range.selectNode(copyText);
+                window.getSelection().removeAllRanges();
+                window.getSelection().addRange(range);
+            }
+
+            icon.classList.remove('text-white');
+            icon.classList.add('text-green-400');
+            urlContainer.classList.remove('text-purple-400');
+            urlContainer.classList.add('text-green-400');
+
+            setTimeout(() => {
+                icon.classList.remove('text-green-400');
+                icon.classList.add('text-white');
+                urlContainer.classList.remove('text-green-400');
+                urlContainer.classList.add('text-purple-400');
+                window.getSelection().removeAllRanges();
+            }, 2000);
+        });
+    });
+</script>
+
+    
+    
     <script>
       // Modal Close Function
       function closeModal() {
@@ -450,6 +532,7 @@
                 console.log("[BotForge] All checks passed! Possible valid Bot Token given, input allowed.");
                 givenToken = true;
                 givenID = decodedBotID;
+                document.getElementById('userRedirectPortal').href = `https://discord.com/developers/applications/${givenID}/oauth2`;
               } else {
                 console.log("[BotForge] User Input Problem › Invalid Token, invalid Bot ID as first component, given:", tokenParts[0]);
               givenToken = false;
@@ -758,81 +841,112 @@
       }
       
       // The OG Finish Button
-      function finishSetup() {
-        const extensions = retrieveCheckedExtensions();
-        const intents = retrieveCheckedIntents();
-        console.log('[BotForge] Prefixes:', prefixArray);
-        console.log('[BotForge] Token Given:', givenToken ?? false);
-        console.log('[BotForge] Bot ID:', givenID ?? false);
-        console.log('[BotForge] Client Secret Given:', givenSecret ?? false);
-      
-        if (!givenToken || !givenSecret) {
-          console.error('[BotForge] Error: Token or Client Secret not provided.');
-          return;
+function finishSetup() {
+    const extensions = retrieveCheckedExtensions();
+    const intents = retrieveCheckedIntents();
+    console.log('[BotForge] Prefixes:', prefixArray);
+    console.log('[BotForge] Token Given:', givenToken ?? false);
+    console.log('[BotForge] Bot ID:', givenID ?? false);
+    console.log('[BotForge] Client Secret Given:', givenSecret ?? false);
+
+    if (!givenToken || !givenSecret) {
+        console.error('[BotForge] Error: Token or Client Secret not provided.');
+        return;
+    }
+
+if(!createdPost) {
+    document.getElementById('error-modal').classList.remove('hidden');
+    const postData = {
+        token: document.getElementById('token').value,
+        prefix: prefixArray,
+        intents: intents,
+        clientSecret: document.getElementById('client-secret').value,
+        extensions: extensions
+    };
+
+    console.log("POST to CREATE in progress.")
+    console.log(postData);
+    sendPostRequest(postData);
+    return;
+}
+
+    // Redirect countdown
+    const countdownElement = document.getElementById('redirect-countdown');
+    let countdown = 10;
+
+    const countdownInterval = setInterval(() => {
+        countdown--;
+        countdownElement.textContent = countdown;
+
+        if (countdown <= 0) {
+            clearInterval(countdownInterval);
+            window.location.href = '/';
         }
-      
-        const postData = {
-          token: givenToken,
-          prefix: prefixArray,
-          intents: intents,
-          clientSecret: givenSecret,
-          extensions: extensions
-        };
-      
-        fetch('/prev.php', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(postData),
-        })
-          .then(response => {
-            if (response.ok) {
-                
-      const sumBotID = document.getElementById("summary-botid");
-      const sumPrefixes = document.getElementById("summary-prefixes");
-      const sumExtensions = document.getElementById("summary-extensions");
-      const sumIntents = document.getElementById("summary-intents");
-      
-      sumBotID.textContent = givenID;
-      sumPrefixes.innerHTML = formatArray(prefixArray, "prefixes");
-      sumExtensions.innerHTML = formatArray(extensions, "extensions");
-      sumIntents.innerHTML = formatArray(intents, "intents");
-      
-      function formatArray(array, type) {
+    }, 1000);
+    
+    document.getElementById('success-modal').classList.remove('hidden');
+
+    // Update summary elements
+    const sumBotID = document.getElementById("summary-botid");
+    const sumPrefixes = document.getElementById("summary-prefixes");
+    const sumExtensions = document.getElementById("summary-extensions");
+    const sumIntents = document.getElementById("summary-intents");
+
+    sumBotID.textContent = givenID;
+    sumPrefixes.innerHTML = formatArray(prefixArray, "prefixes");
+    sumExtensions.innerHTML = formatArray(extensions, "extensions");
+    sumIntents.innerHTML = formatArray(intents, "intents");
+
+    function formatArray(array, type) {
         if (array.length === 0) {
-          return `<i class="ri-error-warning-line mr-1"></i> No ${type} selected.`;
+            return `<i class="ri-error-warning-line mr-1"></i> No ${type} selected.`;
         }
-      
+
         const formattedArray = array.map(item => {
-          if (type !== 'extensions') {
-            return `<div class="border border-purple-400 px-4 py-1 rounded-xl mr-1 mb-2">${item}</div>`;
-          } else {
-            return `<div class="border border-purple-400 px-4 py-1 rounded-xl mr-1 mb-2"><a href="https://docs.botforge.org/p/${item}/" target="_blank"><i class="ri-external-link-line"></i> ${item}</a></div>`;
-          }
-        });
-      
-        return formattedArray.join('');
-      }
-      
-      
-                
-              document.getElementById('success-modal').classList.remove('hidden');
+            if (type !== 'extensions') {
+                return `<div class="border border-purple-400 px-4 py-1 rounded-xl mr-1 mb-2">${item}</div>`;
             } else {
-              document.getElementById('error-modal').classList.remove('hidden');
-              console.error('[BotForge] Error:', response.statusText);
+                return `<div class="border border-purple-400 px-4 py-1 rounded-xl mr-1 mb-2"><a href="https://docs.botforge.org/p/${item}/" target="_blank"><i class="ri-external-link-line"></i> ${item}</a></div>`;
             }
-          })
-          .catch(error => {
-            document.getElementById('error-modal').classList.remove('hidden');
-            console.error('[BotForge] Error:', error);
-          });
-      }
+        });
+
+        return formattedArray.join('');
+    }
+}
+
+let createdPost = false;
+
+function sendPostRequest(postData) {
+    fetch('/create', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(postData),
+    })
+    .then(response => {
+        if (response.ok) {
+            // success
+            createdPost = true;
+        } else {
+              console.error('[BotForge] Error:', response.statusText);
+        }
+    })
+    .catch(error => {
+        console.error('Error during POST request:', error);
+    });
+}
+
+
+
+
+
       
           // More pagination
           const page1 = document.getElementById('page-1');
           const page2 = document.getElementById('page-2');
           const page3 = document.getElementById('page-3');
+          const page4 = document.getElementById('page-4');
           const backBtn = document.getElementById('backBtn');
           const nextBtn = document.getElementById('nextBtn');
           const finishBtn = document.getElementById('finishBtn');
@@ -853,6 +967,10 @@
               3: {
                   title: 'Extensions',
                   description: 'Enhance ForgeScript capabilities by using extensions; this list exclusively displays official ones.'
+              },
+              4: {
+                  title: 'Redirection',
+                  description: 'This is very important so we can redirect you after each login!'
               }
           };
       
@@ -860,10 +978,11 @@
               page1.classList.toggle('hidden', pageNumber !== 1);
               page2.classList.toggle('hidden', pageNumber !== 2);
               page3.classList.toggle('hidden', pageNumber !== 3); 
+              page4.classList.toggle('hidden', pageNumber !== 4);
       
               backBtn.classList.toggle('hidden', pageNumber === 1);
-              nextBtn.classList.toggle('hidden', pageNumber === 3); 
-              finishBtn.classList.toggle('hidden', pageNumber !== 3);
+              nextBtn.classList.toggle('hidden', pageNumber === 4);
+              finishBtn.classList.toggle('hidden', pageNumber !== 4);
       
               headerTitle.textContent = pageContent[pageNumber].title;
               headerDescription.textContent = pageContent[pageNumber].description;
@@ -880,14 +999,43 @@
       
           nextBtn.addEventListener('click', () => {
               const newPage = currentPage + 1;
-              if (newPage <= 3) {
+              if (newPage <= 4) {
                   currentPage = newPage;
                   showPage(currentPage);
               }
+              
+             if(newPage == 4 && !createdPost) {
+    const extensions = retrieveCheckedExtensions();
+    const intents = retrieveCheckedIntents();
+    console.log('[BotForge] Prefixes:', prefixArray);
+    console.log('[BotForge] Token Given:', givenToken ?? false);
+    console.log('[BotForge] Bot ID:', givenID ?? false);
+    console.log('[BotForge] Client Secret Given:', givenSecret ?? false);
+
+    if (!givenToken || !givenSecret) {
+        console.error('[BotForge] Error: Token or Client Secret not provided.');
+        return;
+    }
+
+    const postData = {
+        token: document.getElementById('token').value,
+        prefix: prefixArray,
+        intents: intents,
+        clientSecret: document.getElementById('client-secret').value,
+        extensions: extensions
+    };
+
+    console.log("POST to CREATE in progress.")
+    console.log(postData);
+    sendPostRequest(postData);
+             }
+              
+              
           });
       
           // Show the first page
           showPage(currentPage);
+
       
       // Add Extension Toggles Function
               function addExtensionToggle(extensionName, latest, defaultEnabled) {
@@ -932,7 +1080,6 @@
               }
       
       // Add Extension Toggles Based on the fetched /extension array thingy
-      // const extensionList = ["ForgeDB", "ForgeCanvas", "ForgeTopGG"]; (for testing, ignore)
       
       // Fetch
       fetch('/extensions')
@@ -944,22 +1091,17 @@
       })
       .then(data => {
       const extensionList = data.available;
-      console.log("Available extensions: ",extensionList);
+      console.log("Available extensions: ", extensionList);
+        //loop
+        for (let i = 0; i < extensionList.length; i++) {
+          const extensionName = extensionList[i];
+          const latest = i === extensionList.length - 1;
+          addExtensionToggle(extensionName, latest);
+        }
       })
       .catch(error => {
       console.error('Skill issue while fetching:', error);
       });
-      
-      
-      // Loop
-      
-      for (let i = 0; i < extensionList.length; i++) {
-      const extensionName = extensionList[i];
-      const latest = i === extensionList.length - 1;
-      addExtensionToggle(extensionName, latest);
-      }
-      
-      
       
       // Toggle checkboxes
       
