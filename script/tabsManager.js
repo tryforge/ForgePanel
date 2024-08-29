@@ -67,7 +67,7 @@ function createTab(categoryName, tabLabel, tabIcon, defaultTab, sidebarId, openS
 
 	if (!category) {
 		category = document.createElement('ul');
-		category.classList.add('flex', 'flex-col', 'pt-4', 'space-y-1');
+		category.classList.add('flex', 'flex-col', 'pb-4', 'space-y-1');
 		category.setAttribute('data-category', idCategory);
 		document.getElementById(sidebar).appendChild(category);
 
