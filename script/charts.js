@@ -3,7 +3,7 @@
 const ctx = document.getElementById('chart-test').getContext("2d");
 
 const colors = {
-    purple: "rgba(139, 92, 246, ",
+    purple: "rgba(106, 56, 242, ",
     indigo: "rgba(80, 102, 120, "
 };
 
