@@ -61,12 +61,13 @@ function saveCurrentTheme(theme) {
 // Load the saved theme when the website loads
 function loadSavedTheme() {
 	const selectedTheme = getCookieValue('selectedTheme');
+	updateFilterHue();
 	if(!selectedTheme) { return; }
 	loadTheme(selectedTheme);
 	currentTheme = selectedTheme;
 }
 
-//getCookieValue(cookieName)
+//getCookieValue(name of dat eatable cookie)
 
 const cachedThemes = {};
 
@@ -109,12 +110,38 @@ function loadTheme(cssUrl) {
 }
 
 function applyThemeStyle(cssUrl, css) {
-	const style = document.createElement('style');
-	style.id = 'theme-style';
-	style.textContent = css;
-	document.head.appendChild(style);
-	
-	genIframe();
+    // Create a new style element
+    const style = document.createElement('style');
+    style.id = 'theme-style';
+    style.textContent = css;
+    document.head.appendChild(style);
+    
+    updateFilterHue();
+
+    genIframe();
 }
+
+function updateFilterHue() {
+    const styleElement = document.getElementById('theme-style');
+    if (styleElement) {
+        const styleContent = styleElement.textContent || '';
+        const match = styleContent.match(/--filter-accent-hue\s*:\s*([^;]+)/);
+        
+        if (match) {
+            const filterAccentHue = match[1].trim();
+            
+            // Extract only the numeric part of the hue value
+            const numericMatch = filterAccentHue.match(/-?\d+(\.\d+)?/);
+            
+            if (numericMatch) {
+                const hueValue = numericMatch[0]; // Extracted numeric value
+                document.documentElement.style.setProperty('--filter-accent-hue', filterAccentHue);
+                setHueSlider(hueValue);
+            }
+        }
+    }
+}
+
+
 
 document.addEventListener('DOMContentLoaded', loadSavedTheme);
