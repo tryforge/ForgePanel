@@ -91,15 +91,13 @@
         <!-- Sidebar Header -->
         <div class="fixed flex flex-col top-0 left-0 w-full md:w-60 h-full">
           <!-- Top Bar with Logo and User Icon -->
-          <div class="flex items-center justify-between px-1 border-b-primary mb-4">
+          <div class="flex items-center justify-between px-1 border-b-primary mb-2">
             <div class="mx-4 my-3 flex items-center w-full">
               <!-- BotForge Logo -->
-              <div class="flex items-center">
-                <div class="rounded-lg overflow-hidden bg-main-gradient w-8 h-8 flex-shrink-0 flex items-center justify-center">
-                  <img src="/assets/logo128x128.png" width="17px" height="17px">
-                </div>
-                <span class="ml-2 font-bold text-primary">BotForge</span>
-              </div>
+<div class="flex items-center">
+        <img src="https://panel.botforge.org/assets/logo128x128.png" alt="Logo" class="bg-main-accent p-2 rounded-lg overflow-hidden w-8 h-8 flex-shrink-0 flex items-center justify-center">
+        <span class="ml-3 text-lg font-semibold text-primary">BotForge</span>
+    </div>
             </div>
             <!-- Menu Icon for mobile devices -->
             <div class="flex items-center md:hidden" id="left-sidebar-burger" onclick="toggleLeftSidebar();">
@@ -113,7 +111,7 @@
           </div>
           <!-- Bot avatar  and name -->
           <div id="selected-app">
-            <div class="mx-5 mt-1 flex items-center px-3 py-2 bg-tertiary border-primary rounded-md">
+            <div class="mx-5 mb-2 flex items-center px-3 py-2 bg-tertiary border-primary rounded-full">
               <!-- User Avatar (Placeholder) -->
               <img src="https://docs.botforge.org/media/karl_sm.webp" alt="User Avatar" class="user-icon">
               <!-- Bot Name -->
@@ -717,7 +715,7 @@
                   <!-- Upload Image Button -->
                   <input type="file" id="customize-avatarInput" class="hidden" accept="image/*">
                   <label for="customize-avatarInput"
-                    class="clickable-input bg-tertiary border-primary text-primary px-6 py-2 rounded text-xs mr-1 text-xxs w-32 md:w-full whitespace-nowrap my-3 cursor-pointer">
+                    class="clickable-input bg-tertiary border-primary text-primary px-6 py-2 rounded text-xs mr-1 text-xxs w-32 md:w-32 whitespace-nowrap my-3 cursor-pointer">
                     <i class="ri-image-add-line"></i> Upload Avatar
                   </label>
                   <p class="text-2xxs text-secondary mx-auto md:mx-0 md:mr-auto">* GIFs are supported.</p>
@@ -1688,8 +1686,8 @@ A: If you want to use a comma or multiple as prefix, simply use the <b>{comma}</
   <script src="/script/selectMenu.js"></script>
   <script async src="/script/extensions.js"></script>
   <script async src="/script/searchSorting.js"></script>
-  <script src="/script/dropdownMenu.js"></script>
-  <script src="/script/dropdownCalls.js"></script>
+  <script src="/script/dropdownMenu.js" defer></script>
+  <script src="/script/dropdownCalls.js" defer></script>
   <script async src="/script/servers.js"></script>
   <script async src="/script/teams.js"></script>
   <script src="/script/rightSidebar.js"></script>
